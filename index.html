@@ -64,18 +64,23 @@
   </style>
 </head>
 <body>
+  <!-- WELCOME SCREEN -->
+  <div class="container" id="welcomeScreen">
+    <h2>Welcome to<br>Intraoral Findings & Treatment Plan</h2>
+    <button onclick="startApp()">Start</button>
+  </div>
 
-  <div class="container">
+  <!-- MAIN APP -->
+  <div class="container hidden" id="mainApp">
     <h2>Intraoral Code Interpreter</h2>
 
-    <label>Enter Code:</label>
+    <label>Enter Code:</label><br>
     <input type="text" id="codeInput" placeholder="e.g. 03">
 
     <button onclick="showResult()">Show Treatment Plan</button>
 
     <div id="output" class="output"></div>
   </div>
-
   <script>
     const codeMapping = {
       "00": ["OHI"],
@@ -86,6 +91,11 @@
       "05": ["Restoration", "Crown and Bridge"],
       "06": ["Restoration", "RCT", "Crown and Bridge"]
     };
+
+    function startApp() {
+      document.getElementById("welcomeScreen").classList.add("hidden");
+      document.getElementById("mainApp").classList.remove("hidden");
+    }
 
     function showResult() {
       let code = document.getElementById("codeInput").value.trim();
@@ -108,6 +118,6 @@
       }
     }
   </script>
-
+ 
 </body>
 </html>
