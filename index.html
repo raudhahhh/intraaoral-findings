@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Intraoral Findings & Treatment Plan</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f6f8fa;
+      padding: 40px;
+    }
+
+    .container {
+      max-width: 500px;
+      background: white;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+      text-align: center;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+      margin-top: 10px;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 15px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .output {
+      margin-top: 20px;
+      padding: 15px;
+      border-radius: 5px;
+      background-color: #eef2f5;
+    }
+
+    .error {
+      color: red;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h2>Intraoral Code Interpreter</h2>
+
+    <label>Enter Code:</label>
+    <input type="text" id="codeInput" placeholder="e.g. 03">
+
+    <button onclick="showResult()">Show Treatment Plan</button>
+
+    <div id="output" class="output"></div>
+  </div>
+
+  <script>
+    const codeMapping = {
+      "00": ["OHI"],
+      "01": ["OHI"],
+      "02": ["OHI"],
+      "03": ["OHI", "Restoration"],
+      "04": ["OHI", "Restoration"],
+      "05": ["Restoration", "Crown and Bridge"],
+      "06": ["Restoration", "RCT", "Crown and Bridge"]
+    };
+
+    function showResult() {
+      let code = document.getElementById("codeInput").value.trim();
+      const outputDiv = document.getElementById("output");
+
+      // Auto-format single digit to two digits
+      if (code.length === 1) {
+        code = "0" + code;
+      }
+
+      if (codeMapping[code]) {
+        let resultHTML = `<strong>Code:</strong> ${code}<br><strong>Treatment Plan:</strong><ul>`;
+        codeMapping[code].forEach(item => {
+          resultHTML += `<li>${item}</li>`;
+        });
+        resultHTML += "</ul>";
+        outputDiv.innerHTML = resultHTML;
+      } else {
+        outputDiv.innerHTML = `<span class="error">❌ Invalid code. Please enter 00–06.</span>`;
+      }
+    }
+  </script>
+
+</body>
+</html>
