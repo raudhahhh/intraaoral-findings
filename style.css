@@ -225,4 +225,78 @@ input[type="checkbox"] {
   border: 1px solid #ccc;
 }
 
+/* =====================
+   ICDAS LEGEND
+===================== */
+
+.icdas-legend {
+  background: #fff;
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 24px;
+}
+
+.icdas-legend h3 {
+  margin-bottom: 12px;
+  color: #0d6efd;
+}
+
+.icdas-legend ul {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 10px;
+}
+
+.icdas-legend li {
+  display: flex;
+  align-items: center;
+  font-size: 0.95rem;
+}
+
+.legend-color {
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  margin-right: 10px;
+  border: 1px solid #ccc;
+}
+
+/* ICDAS colors */
+.icdas-0 { background: #ffffff; }
+.icdas-1 { background: #b6e3ff; }
+.icdas-3 { background: #ffd966; }
+.icdas-4 { background: #ffb347; }
+.icdas-5 { background: #ff6b6b; }
+.icdas-6 { background: #8b0000; }
+
+/* =====================
+   TOOTH GRID
+===================== */
+
+.tooth-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  gap: 16px;
+  margin: 24px 0;
+}
+
+.tooth {
+  height: 80px;
+  border-radius: 12px;
+  border: 2px solid #333;
+  background-color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.tooth:hover {
+  transform: scale(1.05);
+}
+
+
 
