@@ -7,54 +7,78 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+<main class="container">
+  <h2>ICDAS Chart</h2>
+  <p>Select the ICDAS code for each tooth.</p>
 
-  <main class="container">
-    <h2>ICDAS Chart</h2>
+  <form id="icdasForm">
 
-    <form id="icdasForm">
-      <table>
-        <tr>
-          <th>Tooth</th>
-          <th>ICDAS</th>
-        </tr>
+    <!-- QUADRANT 1 -->
+    <section class="quadrant">
+      <h3>Upper Right (Q1)</h3>
+      <div class="tooth-grid">
+        <div class="tooth-card">
+          <span class="tooth-number">18</span>
+          <select data-tooth="18">
+            <option value="">–</option>
+            <option value="0">0</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+          </select>
+        </div>
 
-        <tr>
-          <td>11</td>
-          <td>
-            <select data-tooth="11">
-              <option value="">Select</option>
-              <option value="0">0</option>
-              <option value="1">1</option>
-              <option value="2">2</option>
-              <option value="3">3</option>
-              <option value="4">4</option>
-              <option value="5">5</option>
-              <option value="6">6</option>
-            </select>
-          </td>
-        </tr>
+        <div class="tooth-card">
+          <span class="tooth-number">17</span>
+          <select data-tooth="17">
+            <option value="">–</option>
+            <option value="0">0</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+          </select>
+        </div>
 
-        <tr>
-          <td>36</td>
-          <td>
-            <select data-tooth="36">
-              <option value="">Select</option>
-              <option value="0">0</option>
-              <option value="1">1</option>
-              <option value="2">2</option>
-              <option value="3">3</option>
-              <option value="4">4</option>
-              <option value="5">5</option>
-              <option value="6">6</option>
-            </select>
-          </td>
-        </tr>
-      </table>
+        <!-- Add 16–11 -->
+      </div>
+    </section>
 
-      <button type="submit" class="btn primary">Next</button>
-    </form>
-  </main>
+    <!-- QUADRANT 2 -->
+    <section class="quadrant">
+      <h3>Upper Left (Q2)</h3>
+      <div class="tooth-grid">
+        <!-- Teeth 21–28 -->
+      </div>
+    </section>
 
-  <script src="app.js"></script>
+    <!-- QUADRANT 3 -->
+    <section class="quadrant">
+      <h3>Lower Left (Q3)</h3>
+      <div class="tooth-grid">
+        <!-- Teeth 31–38 -->
+      </div>
+    </section>
+
+    <!-- QUADRANT 4 -->
+    <section class="quadrant">
+      <h3>Lower Right (Q4)</h3>
+      <div class="tooth-grid">
+        <!-- Teeth 41–48 -->
+      </div>
+    </section>
+
+    <button type="submit" class="btn primary">
+      Next
+    </button>
+
+  </form>
+</main>
+
 </body>
 </html>
