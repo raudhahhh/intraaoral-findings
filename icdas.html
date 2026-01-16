@@ -1,110 +1,60 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ICDAS Tooth Chart</title>
-
-<style>
-body {
-    font-family: Arial, sans-serif;
-    text-align: center;
-    background: #f5f5f5;
-    margin: 0;
-    padding: 20px;
-}
-
-/* ICDAS Buttons */
-.icdas-container {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-bottom: 20px;
-}
-
-.icdas-btn {
-    padding: 12px 16px;
-    border-radius: 8px;
-    color: white;
-    font-weight: bold;
-    cursor: pointer;
-}
-
-.icdas-1 { background: #6EC6FF; }
-.icdas-2 { background: #FFD54F; color: #000; }
-.icdas-3 { background: #FF9800; }
-.icdas-4 { background: #8E24AA; }
-.icdas-5 { background: #E53935; }
-.icdas-6 { background: #5D4037; }
-
-/* Teeth Layout */
-.teeth {
-    display: grid;
-    grid-template-columns: repeat(8, 1fr);
-    gap: 10px;
-    max-width: 600px;
-    margin: auto;
-}
-
-.tooth {
-    width: 60px;
-    height: 80px;
-    background: white;
-    border: 2px solid #333;
-    border-radius: 12px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: bold;
-}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ICDAS Chart</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
-
 <body>
 
-<h2>ICDAS Tooth Chart</h2>
-<p>Select an ICDAS code, then tap a tooth</p>
+  <main class="container">
+    <h2>ICDAS Chart</h2>
 
-<!-- ICDAS Buttons -->
-<div class="icdas-container">
-    <div class="icdas-btn icdas-1" onclick="selectColor('#6EC6FF')">ICDAS 1</div>
-    <div class="icdas-btn icdas-2" onclick="selectColor('#FFD54F')">ICDAS 2</div>
-    <div class="icdas-btn icdas-3" onclick="selectColor('#FF9800')">ICDAS 3</div>
-    <div class="icdas-btn icdas-4" onclick="selectColor('#8E24AA')">ICDAS 4</div>
-    <div class="icdas-btn icdas-5" onclick="selectColor('#E53935')">ICDAS 5</div>
-    <div class="icdas-btn icdas-6" onclick="selectColor('#5D4037')">ICDAS 6</div>
-</div>
+    <form id="icdasForm">
+      <table>
+        <tr>
+          <th>Tooth</th>
+          <th>ICDAS</th>
+        </tr>
 
-<!-- Teeth Chart -->
-<div class="teeth">
-    <div class="tooth" onclick="paint(this)">1</div>
-    <div class="tooth" onclick="paint(this)">2</div>
-    <div class="tooth" onclick="paint(this)">3</div>
-    <div class="tooth" onclick="paint(this)">4</div>
-    <div class="tooth" onclick="paint(this)">5</div>
-    <div class="tooth" onclick="paint(this)">6</div>
-    <div class="tooth" onclick="paint(this)">7</div>
-    <div class="tooth" onclick="paint(this)">8</div>
-</div>
+        <tr>
+          <td>11</td>
+          <td>
+            <select data-tooth="11">
+              <option value="">Select</option>
+              <option value="0">0</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+              <option value="6">6</option>
+            </select>
+          </td>
+        </tr>
 
-<script>
-let selectedColor = null;
+        <tr>
+          <td>36</td>
+          <td>
+            <select data-tooth="36">
+              <option value="">Select</option>
+              <option value="0">0</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+              <option value="6">6</option>
+            </select>
+          </td>
+        </tr>
+      </table>
 
-function selectColor(color) {
-    selectedColor = color;
-}
+      <button type="submit" class="btn primary">Next</button>
+    </form>
+  </main>
 
-function paint(tooth) {
-    if (!selectedColor) {
-        alert("Please select an ICDAS code first");
-        return;
-    }
-    tooth.style.background = selectedColor;
-    tooth.style.color = "white";
-}
-</script>
-
+  <script src="js/app.js"></script>
 </body>
 </html>
