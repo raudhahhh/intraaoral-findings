@@ -18,6 +18,25 @@ function savePatientData(data) {
 /* =========================
    ORAL HEALTH STATUS
 ========================= */
+const oralHealthDescriptions = {
+  Good: "Maintain oral hygiene",
+  Moderate: "Reinforcement of oral hygiene instruction",
+  Poor: "Reinforcement of oral hygiene instruction"
+};
+
+/* =========================
+   ICDAS TREATMENT MAP
+========================= */
+const icdasTreatmentMap = {
+  1: "First visual change in enamel (white spot after air drying) — Fissure sealant",
+  2: "Distinct visual change in enamel (visible without air drying) — Fissure sealant",
+  3: "Localized enamel breakdown without visible dentin — Restoration",
+  4: "Underlying dark shadow without cavitation — Restoration",
+  5: "Distinct cavity with visible dentin — IOPa, Vitality Test, Restoration, RCT, Crown & Bridge",
+  6: "Extensive cavity involving ≥½ tooth surface — IOPa, Vitality Test, Restoration, RCT, Crown & Bridge"
+};
+
+
 const oralStatusForm = document.getElementById("oralStatusForm");
 
 if (oralStatusForm) {
@@ -98,21 +117,25 @@ if (summaryContent) {
   const plan = [];
 
   /* ----- Oral Health Logic ----- */
-  if (data.oralHealthStatus === "Poor") {
-    plan.push("Oral hygiene instruction required");
-  }
+ if (data.oralHealthStatus && oralHealthDescriptions[data.oralHealthStatus]) {
+  plan.push(oralHealthDescriptions[data.oralHealthStatus]);
+}
 
-  if (data.oralHealthStatus === "Moderate") {
-    plan.push("Reinforcement of oral hygiene practices");
-  }
 
   /* ----- ICDAS Logic ----- */
-  const icdasValues = Object.values(data.icdas);
-  const highCaries = icdasValues.some(v => v >= 4);
+const icdasEntries = Object.entries(data.icdas);
 
-  if (highCaries) {
-    plan.push("Restorative treatment indicated for carious lesions");
-  }
+if (icdasEntries.length > 0) {
+  plan.push("🦷 ICDAS Charting 🦷");
+  icdasEntries.forEach(([tooth, code]) => {
+    if (icdasTreatmentMap[code]) {
+      plan.push(
+        `Tooth ${tooth}: ICDAS ${code} — ${icdasTreatmentMap[code]}`
+      );
+    }
+  });
+}
+
 
   /* ----- Periodontal Logic ----- */
   if (data.periodontal.bleeding) {
