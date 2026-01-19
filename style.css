@@ -210,7 +210,8 @@ input[type="checkbox"] {
   display: flex;
   flex-direction: column;
   gap: 30px;
-  align-items: center;
+  align-items: flex-start;
+  min-width: 860px;
 }
 
 .jaw {
@@ -243,6 +244,7 @@ input[type="checkbox"] {
 .tooth:hover {
   background: #e0f0ff;
 }
+
 
 
 
