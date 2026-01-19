@@ -35,3 +35,16 @@ if (summaryContent) {
 
   summaryContent.innerHTML = `<ul>${plan.map(p => `<li>${p}</li>`).join("")}</ul>`;
 }
+
+/* =========================
+   RESET ON NEW ASSESSMENT
+========================= */
+
+const resetBtn = document.getElementById("resetBtn");
+
+if (resetBtn) {
+  resetBtn.addEventListener("click", () => {
+    localStorage.removeItem("patientData");
+    localStorage.removeItem("bpeData"); // safe even if not used yet
+  });
+}
