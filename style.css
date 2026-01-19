@@ -149,6 +149,14 @@ input[type="checkbox"] {
   }
 }
 
+.icdas-scroll {
+  width: 100%;
+  overflow-x: auto;
+  padding-bottom: 10px;
+  scrollbar-width: thin;
+  -webkit-overflow-scrolling: touch;
+}
+
 /* =====================
    ICDAS LEGEND
 ===================== */
@@ -235,6 +243,7 @@ input[type="checkbox"] {
 .tooth:hover {
   background: #e0f0ff;
 }
+
 
 
 
