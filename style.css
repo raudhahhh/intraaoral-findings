@@ -187,6 +187,7 @@ input[type="checkbox"] {
 }
 
 .legend-color {
+  display: inline-block; 
   width: 18px;
   height: 18px;
   border-radius: 4px;
@@ -401,6 +402,7 @@ select {
   padding: 8px;
   margin-bottom: 15px;
 }
+
 
 
 
