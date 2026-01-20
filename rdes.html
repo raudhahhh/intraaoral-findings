@@ -1,1 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>RDES Assessment</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+<main class="container">
+
+  <h2>🦷 Restorative Difficulty Evaluation System (RDES)</h2>
+  <p>Click the score to cycle from 1 (low risk) to 6 (high risk)</p>
+
+  <table class="rdes-table">
+    <thead>
+      <tr>
+        <th>Parameter</th>
+        <th>Score</th>
+        <th>Risk Level</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Endodontic complexity and outcome</td>
+        <td class="rdes-score" data-key="endodontic">1</td>
+        <td class="rdes-risk">Low</td>
+      </tr>
+      <tr>
+        <td>Vertical coronal residual structure</td>
+        <td class="rdes-score" data-key="vertical">1</td>
+        <td class="rdes-risk">Low</td>
+      </tr>
+      <tr>
+        <td>Horizontal coronal residual structure</td>
+        <td class="rdes-score" data-key="horizontal">1</td>
+        <td class="rdes-risk">Low</td>
+      </tr>
+      <tr>
+        <td>Restoration marginal seal</td>
+        <td class="rdes-score" data-key="seal">1</td>
+        <td class="rdes-risk">Low</td>
+      </tr>
+      <tr>
+        <td>Local interdisciplinary condition</td>
+        <td class="rdes-score" data-key="interdisciplinary">1</td>
+        <td class="rdes-risk">Low</td>
+      </tr>
+      <tr>
+        <td>Complexity of treatment planning</td>
+        <td class="rdes-score" data-key="planning">1</td>
+        <td class="rdes-risk">Low</td>
+      </tr>
+      <tr>
+        <td>Functional need</td>
+        <td class="rdes-score" data-key="functional">1</td>
+        <td class="rdes-risk">Low</td>
+      </tr>
+      <tr>
+        <td>Dental wear and aesthetics</td>
+        <td class="rdes-score" data-key="aesthetics">1</td>
+        <td class="rdes-risk">Low</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div style="text-align:center; margin-top:30px;">
+    <button id="nextBtn" class="btn primary">Next</button>
+  </div>
+
+</main>
+
+<script src="js/rdes.js"></script>
+</body>
+</html>
 
