@@ -76,8 +76,13 @@ if (summaryContent) {
 const resetBtn = document.getElementById("resetBtn");
 
 if (resetBtn) {
-  resetBtn.addEventListener("click", () => {
+  resetBtn.addEventListener("click", (e) => {
+    e.preventDefault(); // stop instant navigation
+
     localStorage.removeItem("patientData");
-    localStorage.removeItem("bpeData"); 
+    localStorage.removeItem("bpeData");
+
+    window.location.href = "index.html"; // navigate AFTER reset
   });
 }
+
