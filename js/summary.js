@@ -15,8 +15,8 @@ const icdasDetailMap = {
   2: "Fissure sealant",
   3: "Restoration",
   4: "Restoration",
-  5: "IOPa, Vitality Test, Restoration, RCT, crown & bridge",
-  6: "IOPa, Vitality Test, Restoration, RCT, crown & bridge"
+  5: "Investigation, Pulp Capping, Restoration, RCT, Crown and Bridge",
+  6: "Investigation, RCT, Post and Core, Extraction"
 };
 
 const bpeTreatmentMap = {
