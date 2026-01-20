@@ -10,6 +10,15 @@ const oralHealthDescriptions = {
   Poor: "Reinforcement of oral hygiene instruction"
 };
 
+const icdasDetailMap = {
+  1: "First visual change in enamel (white spot seen after 5 sec of air drying) — Fissure sealant",
+  2: "Distinct visual change in enamel (white spot seen without air drying) — Fissure sealant",
+  3: "Localised enamel breakdown due to caries without visible dentin — Restoration",
+  4: "Non-cavitated surface with underlying dark shadow — Restoration",
+  5: "Distinct cavity with visible change — IOPa, Vitality Test, Restoration, RCT, crown & bridge",
+  6: "Extensive distinct cavity with visible dentin involving at least half of the tooth surface and possibly reaching the pulp — IOPa, Vitality Test, Restoration, RCT, crown & bridge"
+};
+
 const bpeTreatmentMap = {
   "0": "Healthy gingival tissues, no BOP — No treatment",
   "1": "No calculus or defective margins, BOP present — Oral hygiene instruction (OHI)",
@@ -50,16 +59,21 @@ if (summaryContent) {
       }</p>
     </div>
 
-    <div class="report-section">
-      <h3>🦷 ICDAS CHART</h3>
-      ${
-        icdasEntries.length
-          ? icdasEntries
-              .map(([tooth, code]) => `<p>🦷 Tooth ${tooth}: ICDAS ${code}</p>`)
-              .join("")
-          : "<p>No ICDAS findings recorded</p>"
-      }
-    </div>
+   <div class="report-section">
+    <h3>🦷 ICDAS CHART</h3>
+    ${
+      icdasEntries.length
+        ? icdasEntries
+            .map(([tooth, code]) => `
+              <p>
+                🦷 Tooth ${tooth}: ${code},
+                ${icdasDetailMap[code] || "Unknown ICDAS code"}
+              </p>
+            `)
+            .join("")
+        : "<p>No ICDAS findings recorded</p>"
+    }
+  </div>
 
     <div class="report-section">
       <h3>🪥 BASIC PERIODONTAL EXAMINATION</h3>
