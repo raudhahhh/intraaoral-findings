@@ -339,6 +339,48 @@ input[type="checkbox"] {
   border-bottom: none;
 }
 
+/* =====================
+   RDES TABLE
+===================== */
+
+.rdes-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  margin-top: 20px;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.rdes-table th,
+.rdes-table td {
+  padding: 14px;
+  border-bottom: 1px solid #eee;
+  text-align: left;
+}
+
+.rdes-table th {
+  background: #f1f3f5;
+  font-weight: 600;
+}
+
+.rdes-score {
+  text-align: center;
+  font-weight: bold;
+  cursor: pointer;
+  border: 2px solid #333;
+  border-radius: 8px;
+  width: 60px;
+}
+
+.rdes-risk {
+  font-weight: 600;
+}
+
+.rdes-score:hover {
+  background-color: #e9ecef;
+}
+
 
 
 
