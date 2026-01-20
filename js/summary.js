@@ -11,12 +11,12 @@ const oralHealthDescriptions = {
 };
 
 const icdasDetailMap = {
-  1: "First visual change in enamel (white spot seen after 5 sec of air drying) — Fissure sealant",
-  2: "Distinct visual change in enamel (white spot seen without air drying) — Fissure sealant",
-  3: "Localised enamel breakdown due to caries without visible dentin — Restoration",
-  4: "Non-cavitated surface with underlying dark shadow — Restoration",
-  5: "Distinct cavity with visible change — IOPa, Vitality Test, Restoration, RCT, crown & bridge",
-  6: "Extensive distinct cavity with visible dentin involving at least half of the tooth surface and possibly reaching the pulp — IOPa, Vitality Test, Restoration, RCT, crown & bridge"
+  1: "Fissure sealant",
+  2: "Fissure sealant",
+  3: "Restoration",
+  4: "Restoration",
+  5: "IOPa, Vitality Test, Restoration, RCT, crown & bridge",
+  6: "IOPa, Vitality Test, Restoration, RCT, crown & bridge"
 };
 
 const bpeTreatmentMap = {
