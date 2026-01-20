@@ -187,13 +187,15 @@ input[type="checkbox"] {
 }
 
 .legend-color {
-  display: inline-block; 
-  width: 18px;
-  height: 18px;
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  min-width: 20px;
+  min-height: 20px;
   border-radius: 4px;
-  margin-right: 10px;
-  border: 1px solid #ccc;
+  border: 1px solid #999;
 }
+
 
 /* ICDAS colors */
 .icdas-0 { background: #ffffff; }
@@ -315,6 +317,10 @@ input[type="checkbox"] {
    BPE LEGEND TABLE
 ===================== */
 
+.legend-table td:first-child {
+  text-align: center;
+}
+
 .legend-table {
   width: 100%;
   border-collapse: collapse;
@@ -402,6 +408,7 @@ select {
   padding: 8px;
   margin-bottom: 15px;
 }
+
 
 
 
