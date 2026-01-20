@@ -1,11 +1,3 @@
-function getPatientData() {
-  return JSON.parse(localStorage.getItem("patientData")) || {};
-}
-
-function savePatientData(data) {
-  localStorage.setItem("patientData", JSON.stringify(data));
-}
-
 const scores = document.querySelectorAll(".rdes-score");
 let rdesData = JSON.parse(localStorage.getItem("rdesData")) || {};
 
@@ -16,8 +8,6 @@ function getRiskLabel(score) {
 }
 
 function applyRiskColour(riskCell, score) {
-  if (!riskCell) return;
-
   riskCell.classList.remove("rdes-low", "rdes-moderate", "rdes-high");
 
   if (score <= 2) riskCell.classList.add("rdes-low");
@@ -25,25 +15,23 @@ function applyRiskColour(riskCell, score) {
   else riskCell.classList.add("rdes-high");
 }
 
-// Load saved data
-scores.forEach(cell => {
-  const key = cell.dataset.key;
+// INIT + CLICK
+scores.forEach(scoreCell => {
+  const key = scoreCell.dataset.key;
+  const riskCell = scoreCell.nextElementSibling;
 
-  if (rdesData[key]) {
-    cell.textContent = rdesData[key];
-  }
+  // load saved
+  const savedScore = rdesData[key] || 1;
+  scoreCell.textContent = savedScore;
+  riskCell.textContent = getRiskLabel(savedScore);
+  applyRiskColour(riskCell, savedScore);
 
-  const riskCell = cell.nextElementSibling;
-  const score = Number(cell.textContent);
-
-  riskCell.textContent = getRiskLabel(score);
-  applyRiskColour(riskCell, score);
-
-  cell.addEventListener("click", () => {
-    let current = Number(cell.textContent);
+  // click to cycle
+  scoreCell.addEventListener("click", () => {
+    let current = Number(scoreCell.textContent);
     let next = current === 6 ? 1 : current + 1;
 
-    cell.textContent = next;
+    scoreCell.textContent = next;
     riskCell.textContent = getRiskLabel(next);
     applyRiskColour(riskCell, next);
 
@@ -52,14 +40,16 @@ scores.forEach(cell => {
   });
 });
 
-// Next → Summary
+// NEXT BUTTON
 const nextBtn = document.getElementById("nextBtn");
 
 if (nextBtn) {
   nextBtn.addEventListener("click", () => {
-    const patientData = getPatientData();
+    const patientData =
+      JSON.parse(localStorage.getItem("patientData")) || {};
+
     patientData.rdes = rdesData;
-    savePatientData(patientData);
+    localStorage.setItem("patientData", JSON.stringify(patientData));
 
     window.location.href = "summary.html";
   });
