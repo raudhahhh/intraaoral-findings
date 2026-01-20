@@ -373,45 +373,38 @@ input[type="checkbox"] {
 }
 
 .rdes-score {
-  text-align: center;
-  font-weight: bold;
   cursor: pointer;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  width: 60px;
-}
-
-.rdes-risk {
+  text-align: center;
   font-weight: 600;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background: #fff;
 }
 
-.rdes-score:hover {
-  background-color: #e9ecef;
-}
-
-
+/* Risk colours */
 .rdes-low {
   background-color: #e6f4ea;
-  border-left: 6px solid #2e7d32;
-  font-weight: 600; 
+  color: #2e7d32;
+  font-weight: 600;
 }
 
 .rdes-moderate {
   background-color: #fff8e1;
-  border-left: 6px solid #f9a825;
-  font-weight: 600; 
+  color: #f57f17;
+  font-weight: 600;
 }
 
 .rdes-high {
   background-color: #fdecea;
-  border-left: 6px solid #c62828;
-  font-weight: 600; 
+  color: #c62828;
+  font-weight: 600;
 }
 
 select {
   padding: 8px;
   margin-bottom: 15px;
 }
+
 
 
 
