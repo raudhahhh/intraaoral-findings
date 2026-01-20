@@ -11,7 +11,7 @@ function savePatientData(data) {
 }
 
 const icdasColors = {
-  0: "#ffffff",
+  0: "#f9f9f9",
   1: "#b6e3ff",
   2: "#b6e3ff",
   3: "#ffd966",
