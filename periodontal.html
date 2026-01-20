@@ -1,41 +1,30 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Periodontal Assessment</title>
-  <link rel="stylesheet" href="style.css" />
-</head>
-<body>
+function getPatientData() {
+  return JSON.parse(localStorage.getItem("patientData")) || {
+    oralHealthStatus: null,
+    icdas: {},
+    periodontal: {}
+  };
+}
 
-  <main class="container">
-    <h2>Periodontal Assessment</h2>
+function savePatientData(data) {
+  localStorage.setItem("patientData", JSON.stringify(data));
+}
 
-    <form id="periodontalForm">
-      <label>
-        Pocket Depth
-        <select id="pocketDepth" required>
-          <option value="">Select</option>
-          <option value="1–3mm">1–3 mm</option>
-          <option value="4–5mm">4–5 mm</option>
-          <option value="≥6mm">≥6 mm</option>
-        </select>
-      </label>
+const periodontalForm = document.getElementById("periodontalForm");
 
-      <label>
-        <input type="checkbox" id="bleeding" />
-        Bleeding on Probing
-      </label>
+if (periodontalForm) {
+  periodontalForm.addEventListener("submit", function (e) {
+    e.preventDefault();
 
-      <label>
-        <input type="checkbox" id="plaque" />
-        Plaque Present
-      </label>
+    const data = getPatientData();
 
-      <button type="submit" class="btn primary">Next</button>
-    </form>
-  </main>
+    data.periodontal = {
+      pocketDepth: document.getElementById("pocketDepth").value,
+      bleeding: document.getElementById("bleeding").checked,
+      plaque: document.getElementById("plaque").checked
+    };
 
-  <script src="js/periodontal.js"></script>
-</body>
-</html>
+    savePatientData(data);
+    window.location.href = "summary.html";
+  });
+}
