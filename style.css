@@ -310,6 +310,37 @@ input[type="checkbox"] {
   line-height: 1.5;
 }
 
+/* =====================
+   BPE LEGEND TABLE
+===================== */
+
+.legend-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 12px;
+  background: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.legend-table th,
+.legend-table td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+}
+
+.legend-table th {
+  background-color: #f1f3f5;
+  font-weight: 600;
+}
+
+.legend-table tr:last-child td {
+  border-bottom: none;
+}
+
+
+
 
 
 
