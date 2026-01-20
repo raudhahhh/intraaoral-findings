@@ -1,3 +1,11 @@
+function getPatientData() {
+  return JSON.parse(localStorage.getItem("patientData")) || {};
+}
+
+function savePatientData(data) {
+  localStorage.setItem("patientData", JSON.stringify(data));
+}
+
 const scores = document.querySelectorAll(".rdes-score");
 let rdesData = JSON.parse(localStorage.getItem("rdesData")) || {};
 
@@ -46,6 +54,10 @@ scores.forEach(cell => {
 
 // Next → Summary
 document.getElementById("nextBtn").addEventListener("click", () => {
+  const patientData = getPatientData();
+  patientData.rdes = rdesData;
+  savePatientData(patientData);
+
   window.location.href = "summary.html";
 });
 
