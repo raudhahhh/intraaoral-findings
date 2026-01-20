@@ -15,7 +15,7 @@ function getRiskLabel(score) {
   return "High";
 }
 
-function applyRiskColour(cell, score) {
+function applyRiskColour(riskCell, score) {
   cell.classList.remove("rdes-low", "rdes-moderate", "rdes-high");
 
   if (score <= 2) cell.classList.add("rdes-low");
