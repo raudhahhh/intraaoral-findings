@@ -71,7 +71,7 @@ if (summaryContent) {
   let rdesOverallRisk = "Low risk";
   if (highRiskCount >= 1) {
     rdesOverallRisk = "High risk";
-  } else if (moderateRiskCount >= 3) {
+  } else if (moderateRiskCount >= 2) {
     rdesOverallRisk = "Moderate risk";
   }
 
