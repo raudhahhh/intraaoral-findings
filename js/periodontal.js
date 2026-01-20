@@ -1,30 +1,129 @@
-function getPatientData() {
-  return JSON.parse(localStorage.getItem("patientData")) || {
-    oralHealthStatus: null,
-    icdas: {},
-    periodontal: {}
-  };
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>BPE Digital Chart</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background: #f4f6f8;
+  padding: 20px;
 }
 
-function savePatientData(data) {
-  localStorage.setItem("patientData", JSON.stringify(data));
+h1 {
+  text-align: center;
 }
 
-const periodontalForm = document.getElementById("periodontalForm");
-
-if (periodontalForm) {
-  periodontalForm.addEventListener("submit", function (e) {
-    e.preventDefault();
-
-    const data = getPatientData();
-
-    data.periodontal = {
-      pocketDepth: document.getElementById("pocketDepth").value,
-      bleeding: document.getElementById("bleeding").checked,
-      plaque: document.getElementById("plaque").checked
-    };
-
-    savePatientData(data);
-    window.location.href = "summary.html";
-  });
+.bpe-table {
+  margin: 20px auto;
+  border-collapse: collapse;
 }
+
+.bpe-table td, .bpe-table th {
+  border: 2px solid #333;
+  width: 120px;
+  height: 70px;
+  text-align: center;
+  font-size: 20px;
+}
+
+.sextant {
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.code-0 { background: #c8e6c9; }
+.code-1 { background: #fff9c4; }
+.code-2 { background: #ffe0b2; }
+.code-3 { background: #ffccbc; }
+.code-4 { background: #ffcdd2; }
+.code-star { background: #e1bee7; }
+
+.legend {
+  max-width: 700px;
+  margin: 30px auto;
+  background: white;
+  padding: 15px;
+  border-radius: 10px;
+}
+
+.legend p {
+  margin: 6px 0;
+}
+</style>
+</head>
+
+<body>
+
+<h1>🪥 BASIC PERIODONTAL EXAMINATION (BPE)</h1>
+
+<table class="bpe-table">
+  <tr>
+    <th>17–14</th>
+    <th>13–23</th>
+    <th>24–27</th>
+  </tr>
+  <tr>
+    <td class="sextant" onclick="changeCode(this,'UR')">2</td>
+    <td class="sextant" onclick="changeCode(this,'UA')">2</td>
+    <td class="sextant" onclick="changeCode(this,'UL')">2</td>
+  </tr>
+  <tr>
+    <th>47–44</th>
+    <th>43–33</th>
+    <th>34–37</th>
+  </tr>
+  <tr>
+    <td class="sextant" onclick="changeCode(this,'LR')">2</td>
+    <td class="sextant" onclick="changeCode(this,'LA')">2</td>
+    <td class="sextant" onclick="changeCode(this,'LL')">2</td>
+  </tr>
+</table>
+
+<div class="legend">
+  <h3>Code – Legend – Treatment</h3>
+  <p><b>0</b> – Healthy gingival tissues, no BOP — <i>No treatment</i></p>
+  <p><b>1</b> – No calculus or defective margins, BOP present — <i>OHI</i></p>
+  <p><b>2</b> – Colored area fully visible — <i>Scaling & polishing</i></p>
+  <p><b>3</b> – Colored area partly visible — <i>Scaling & polishing + RSD</i></p>
+  <p><b>4</b> – Colored area disappears (≥6 mm) — <i>Scaling & polishing + RSD</i></p>
+  <p><b>*</b> – Furcation involvement present</p>
+</div>
+
+<script>
+const codes = ["0","1","2","3","4","*"];
+let bpeData = JSON.parse(localStorage.getItem("bpeData")) || {};
+
+function changeCode(cell, sextant) {
+  let current = cell.textContent;
+  let index = codes.indexOf(current);
+  let next = codes[(index + 1) % codes.length];
+
+  cell.textContent = next;
+  updateColor(cell, next);
+
+  bpeData[sextant] = next;
+  localStorage.setItem("bpeData", JSON.stringify(bpeData));
+}
+
+function updateColor(cell, code) {
+  cell.className = "sextant";
+  if (code === "*") cell.classList.add("code-star");
+  else cell.classList.add("code-" + code);
+}
+
+// Load saved data
+document.querySelectorAll(".sextant").forEach(cell => {
+  let sextant = cell.getAttribute("onclick").match(/'(.*?)'/)[1];
+  let code = bpeData[sextant];
+  if (code) {
+    cell.textContent = code;
+    updateColor(cell, code);
+  }
+});
+</script>
+
+</body>
+</html>
