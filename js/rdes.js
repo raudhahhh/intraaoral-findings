@@ -9,6 +9,10 @@ const DEFAULT_RDES = {
   aesthetics: 1
 };
 
+if (!localStorage.getItem("rdesData")) {
+  localStorage.setItem("rdesData", JSON.stringify(DEFAULT_RDES));
+}
+
 const scores = document.querySelectorAll(".rdes-score");
 let rdesData = {
   ...DEFAULT_RDES,
