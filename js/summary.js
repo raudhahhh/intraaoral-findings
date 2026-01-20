@@ -130,16 +130,17 @@ if (summaryContent) {
       ${
         rdesEntries.length
           ? `
-            ${rdesEntries
-              .map(
-                ([key, score]) => `
-                  <p>
-                    ${key.replace(/([A-Z])/g, " $1")}:
-                    Score ${score} (${rdesRiskLabel(score)})
-                  </p>
-                `
-              )
-              .join("")}
+          ${rdesEntries
+          .map(
+            ([key, score]) => `
+              <p>
+                ${rdesLabelMap[key] || key}:
+                Score ${score} (${rdesRiskLabel(score)})
+              </p>
+            `
+          )
+          .join("")}
+
             <p><strong>Overall RDES Risk: ${rdesOverallRisk.toUpperCase()}</strong></p>
           `
           : "<p>No RDES assessment recorded</p>"
