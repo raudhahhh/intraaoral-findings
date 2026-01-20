@@ -56,6 +56,6 @@ if (saveIcdasBtn) {
     });
 
     savePatientData(data);
-    window.location.href = "periodontal.html";
+    window.location.href = "rdes.html";
   });
 }
