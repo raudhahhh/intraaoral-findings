@@ -62,12 +62,37 @@ if (summaryContent) {
   }
 
   /* ===== RENDER ===== */
-  summaryContent.innerHTML = `
-    <ul>
-      ${plan.map(p => `<li>${p}</li>`).join("")}
-    </ul>
-  `;
-}
+summaryContent.innerHTML = `
+  <div class="report-section">
+    <h3>👄 ORAL HYGIENE</h3>
+    <p>${data.oralHealthStatus
+      ? `${data.oralHealthStatus} — ${oralHealthDescriptions[data.oralHealthStatus]}`
+      : "Not recorded"}
+    </p>
+  </div>
+
+  <div class="report-section">
+    <h3>🦷 ICDAS CHART</h3>
+    ${
+      icdasEntries.length > 0
+        ? icdasEntries.map(
+            ([tooth, code]) =>
+              `<p>🦷 Tooth ${tooth}: ICDAS ${code}</p>`
+          ).join("")
+        : "<p>No ICDAS findings recorded</p>"
+    }
+  </div>
+
+  <div class="report-section">
+    <h3>🪥 BASIC PERIODONTAL EXAMINATION</h3>
+    ${
+      bpeCodes.length > 0
+        ? `<p><strong>Code ${maxCode}</strong> — ${bpeTreatmentMap[maxCode]}</p>`
+        : "<p>No BPE recorded</p>"
+    }
+  </div>
+`;
+
 
 /* =========================
    RESET ON NEW ASSESSMENT
