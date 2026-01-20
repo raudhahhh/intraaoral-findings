@@ -1,5 +1,5 @@
 const DEFAULT_RDES = {
-  endodontic: 1,
+  endodontic : 1,
   vertical: 1,
   horizontal: 1,
   seal: 1,
