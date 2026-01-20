@@ -183,6 +183,7 @@ input[type="checkbox"] {
 .icdas-legend li {
   display: flex;
   align-items: center;
+  gap: 12px; 
   font-size: 0.95rem;
 }
 
@@ -408,6 +409,7 @@ select {
   padding: 8px;
   margin-bottom: 15px;
 }
+
 
 
 
