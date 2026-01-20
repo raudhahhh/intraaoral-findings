@@ -28,6 +28,12 @@ const bpeTreatmentMap = {
   "*": "Furcation involvement present"
 };
 
+function rdesRiskLabel(score) {
+  if (score <= 2) return "Low";
+  if (score <= 4) return "Moderate";
+  return "High";
+}
+
 if (summaryContent) {
   const data = getPatientData();
 
@@ -41,11 +47,32 @@ if (summaryContent) {
   let maxCode = null;
   if (bpeCodes.length > 0) {
     const severityOrder = ["0", "1", "2", "3", "4", "*"];
-    maxCode = bpeCodes.reduce((worst, current) =>
-      severityOrder.indexOf(current) > severityOrder.indexOf(worst)
-        ? current
-        : worst
-    , "0");
+    maxCode = bpeCodes.reduce(
+      (worst, current) =>
+        severityOrder.indexOf(current) > severityOrder.indexOf(worst)
+          ? current
+          : worst,
+      "0"
+    );
+  }
+
+  /* ===== RDES ===== */
+  const rdesData = JSON.parse(localStorage.getItem("rdesData")) || {};
+  const rdesEntries = Object.entries(rdesData);
+
+  const highRiskCount = rdesEntries.filter(
+    ([_, score]) => score >= 5
+  ).length;
+
+  const moderateRiskCount = rdesEntries.filter(
+    ([_, score]) => score >= 3 && score <= 4
+  ).length;
+
+  let rdesOverallRisk = "Low risk";
+  if (highRiskCount >= 1) {
+    rdesOverallRisk = "High risk";
+  } else if (moderateRiskCount >= 3) {
+    rdesOverallRisk = "Moderate risk";
   }
 
   /* ===== RENDER ===== */
@@ -59,21 +86,23 @@ if (summaryContent) {
       }</p>
     </div>
 
-   <div class="report-section">
-    <h3>🦷 ICDAS CHART</h3>
-    ${
-      icdasEntries.length
-        ? icdasEntries
-            .map(([tooth, code]) => `
-              <p>
-                🦷 Tooth ${tooth}: ${code},
-                ${icdasDetailMap[code] || "Unknown ICDAS code"}
-              </p>
-            `)
-            .join("")
-        : "<p>No ICDAS findings recorded</p>"
-    }
-  </div>
+    <div class="report-section">
+      <h3>🦷 ICDAS CHART</h3>
+      ${
+        icdasEntries.length
+          ? icdasEntries
+              .map(
+                ([tooth, code]) => `
+                  <p>
+                    🦷 Tooth ${tooth}: ICDAS ${code} —
+                    ${icdasDetailMap[code] || "Unknown ICDAS code"}
+                  </p>
+                `
+              )
+              .join("")
+          : "<p>No ICDAS findings recorded</p>"
+      }
+    </div>
 
     <div class="report-section">
       <h3>🪥 BASIC PERIODONTAL EXAMINATION</h3>
@@ -81,6 +110,27 @@ if (summaryContent) {
         maxCode
           ? `<p><strong>Code ${maxCode}</strong> — ${bpeTreatmentMap[maxCode]}</p>`
           : "<p>No BPE recorded</p>"
+      }
+    </div>
+
+    <div class="report-section">
+      <h3>🦷 RDES ASSESSMENT</h3>
+      ${
+        rdesEntries.length
+          ? `
+            ${rdesEntries
+              .map(
+                ([key, score]) => `
+                  <p>
+                    ${key.replace(/([A-Z])/g, " $1")}:
+                    Score ${score} (${rdesRiskLabel(score)})
+                  </p>
+                `
+              )
+              .join("")}
+            <p><strong>Overall RDES Risk: ${rdesOverallRisk.toUpperCase()}</strong></p>
+          `
+          : "<p>No RDES assessment recorded</p>"
       }
     </div>
   `;
@@ -94,6 +144,7 @@ if (resetBtn) {
     e.preventDefault();
     localStorage.removeItem("patientData");
     localStorage.removeItem("bpeData");
+    localStorage.removeItem("rdesData");
     window.location.href = "index.html";
   });
 }
