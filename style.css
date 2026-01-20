@@ -390,17 +390,17 @@ input[type="checkbox"] {
 }
 
 
-.low-risk {
+.rdes-low {
   background-color: #e6f4ea;
   border-left: 6px solid #2e7d32;
 }
 
-.moderate-risk {
+.rdes-moderate {
   background-color: #fff8e1;
   border-left: 6px solid #f9a825;
 }
 
-.high-risk {
+.rdes-high {
   background-color: #fdecea;
   border-left: 6px solid #c62828;
 }
@@ -409,6 +409,7 @@ select {
   padding: 8px;
   margin-bottom: 15px;
 }
+
 
 
 
