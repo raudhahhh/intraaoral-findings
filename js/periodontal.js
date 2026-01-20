@@ -43,6 +43,6 @@ const nextBtn = document.getElementById("nextBtn");
 
 if (nextBtn) {
   nextBtn.addEventListener("click", () => {
-    window.location.href = "summary.html";
+    window.location.href = "icdas.html";
   });
 }
