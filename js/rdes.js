@@ -16,13 +16,14 @@ function getRiskLabel(score) {
 }
 
 function applyRiskColour(riskCell, score) {
-  cell.classList.remove("rdes-low", "rdes-moderate", "rdes-high");
+  if (!riskCell) return;
 
-  if (score <= 2) cell.classList.add("rdes-low");
-  else if (score <= 4) cell.classList.add("rdes-moderate");
-  else cell.classList.add("rdes-high");
+  riskCell.classList.remove("rdes-low", "rdes-moderate", "rdes-high");
+
+  if (score <= 2) riskCell.classList.add("rdes-low");
+  else if (score <= 4) riskCell.classList.add("rdes-moderate");
+  else riskCell.classList.add("rdes-high");
 }
-
 
 // Load saved data
 scores.forEach(cell => {
@@ -34,9 +35,9 @@ scores.forEach(cell => {
 
   const riskCell = cell.nextElementSibling;
   const score = Number(cell.textContent);
-  riskCell.textContent = getRiskLabel(score);
-  applyRiskColour(cell, score);
 
+  riskCell.textContent = getRiskLabel(score);
+  applyRiskColour(riskCell, score);
 
   cell.addEventListener("click", () => {
     let current = Number(cell.textContent);
@@ -44,8 +45,7 @@ scores.forEach(cell => {
 
     cell.textContent = next;
     riskCell.textContent = getRiskLabel(next);
-    applyRiskColour(cell, next);
-
+    applyRiskColour(riskCell, next);
 
     rdesData[key] = next;
     localStorage.setItem("rdesData", JSON.stringify(rdesData));
@@ -53,11 +53,14 @@ scores.forEach(cell => {
 });
 
 // Next → Summary
-document.getElementById("nextBtn").addEventListener("click", () => {
-  const patientData = getPatientData();
-  patientData.rdes = rdesData;
-  savePatientData(patientData);
+const nextBtn = document.getElementById("nextBtn");
 
-  window.location.href = "summary.html";
-});
+if (nextBtn) {
+  nextBtn.addEventListener("click", () => {
+    const patientData = getPatientData();
+    patientData.rdes = rdesData;
+    savePatientData(patientData);
 
+    window.location.href = "summary.html";
+  });
+}
