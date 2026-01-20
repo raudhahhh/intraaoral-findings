@@ -7,6 +7,15 @@ function getRiskLabel(score) {
   return "High";
 }
 
+function applyRiskColour(cell, score) {
+  cell.classList.remove("rdes-low", "rdes-moderate", "rdes-high");
+
+  if (score <= 2) cell.classList.add("rdes-low");
+  else if (score <= 4) cell.classList.add("rdes-moderate");
+  else cell.classList.add("rdes-high");
+}
+
+
 // Load saved data
 scores.forEach(cell => {
   const key = cell.dataset.key;
@@ -16,7 +25,10 @@ scores.forEach(cell => {
   }
 
   const riskCell = cell.nextElementSibling;
-  riskCell.textContent = getRiskLabel(Number(cell.textContent));
+  const score = Number(cell.textContent);
+  riskCell.textContent = getRiskLabel(score);
+  applyRiskColour(cell, score);
+
 
   cell.addEventListener("click", () => {
     let current = Number(cell.textContent);
@@ -24,6 +36,8 @@ scores.forEach(cell => {
 
     cell.textContent = next;
     riskCell.textContent = getRiskLabel(next);
+    applyRiskColour(cell, next);
+
 
     rdesData[key] = next;
     localStorage.setItem("rdesData", JSON.stringify(rdesData));
