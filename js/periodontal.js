@@ -18,11 +18,7 @@ if (periodontalForm) {
 
     const data = getPatientData();
 
-    data.periodontal = {
-      pocketDepth: document.getElementById("pocketDepth").value,
-      bleeding: document.getElementById("bleeding").checked,
-      plaque: document.getElementById("plaque").checked
-    };
+   localStorage.setItem("bpeData", JSON.stringify(bpeData))
 
     savePatientData(data);
     window.location.href = "summary.html";
