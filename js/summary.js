@@ -34,6 +34,18 @@ function rdesRiskLabel(score) {
   return "High";
 }
 
+const rdesLabelMap = {
+  endodontic: "Endodontic complexity and outcome",
+  vertical: "Vertical coronal residual structure",
+  horizontal: "Horizontal coronal residual structure",
+  seal: "Restoration marginal seal",
+  interdisciplinary: "Local interdisciplinary condition",
+  planning: "Complexity of treatment planning",
+  functional: "Functional need",
+  aesthetics: "Dental wear and aesthetics"
+};
+
+
 if (summaryContent) {
   const data = getPatientData();
 
