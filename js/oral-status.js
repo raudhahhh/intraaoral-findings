@@ -26,6 +26,6 @@ if (oralStatusForm) {
     data.oralHealthStatus = selected.value;
     savePatientData(data);
 
-    window.location.href = "icdas.html";
+    window.location.href = "periodontal.html";
   });
 }
