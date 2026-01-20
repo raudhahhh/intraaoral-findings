@@ -1,5 +1,19 @@
+const DEFAULT_RDES = {
+  endodontic: 1,
+  vertical: 1,
+  horizontal: 1,
+  seal: 1,
+  interdisciplinary: 1,
+  planning: 1,
+  functional: 1,
+  aesthetics: 1
+};
+
 const scores = document.querySelectorAll(".rdes-score");
-let rdesData = JSON.parse(localStorage.getItem("rdesData")) || {};
+let rdesData = {
+  ...DEFAULT_RDES,
+  ...(JSON.parse(localStorage.getItem("rdesData")) || {})
+};
 
 function getRiskLabel(score) {
   if (score <= 2) return "Low";
