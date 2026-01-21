@@ -259,7 +259,7 @@ input[type="checkbox"] {
   flex-direction: column;
   gap: 30px;
   align-items: center;
-  min-width: 860px;
+  min-width: 100%;
 }
 
 .jaw {
@@ -449,6 +449,7 @@ select {
   padding: 8px;
   margin-bottom: 15px;
 }
+
 
 
 
