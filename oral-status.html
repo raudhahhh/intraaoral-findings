@@ -8,33 +8,35 @@
 </head>
 <body>
 
-  <main class="container">
-    <h2>Oral Hygiene</h2>
+<main class="container">
+  <h2>Oral Hygiene</h2>
 
-    <form id="oralStatusForm">
-      <label class="card">
-        <input type="radio" name="oralStatus" value="Good" required />
-        Good
-      </label>
+  <form id="oralStatusForm">
+    <label class="card">
+      <input type="radio" name="oralStatus" value="Good" required />
+      Good
+    </label>
 
-      <label class="card">
-        <input type="radio" name="oralStatus" value="Moderate" />
-        Moderate
-      </label>
+    <label class="card">
+      <input type="radio" name="oralStatus" value="Moderate" />
+      Moderate
+    </label>
 
-      <label class="card">
-        <input type="radio" name="oralStatus" value="Poor" />
-        Poor
-      </label>
+    <label class="card">
+      <input type="radio" name="oralStatus" value="Poor" />
+      Poor
+    </label>
 
-    </form>
-  <div style="display:flex; justify-content:space-between; margin-top:20px;">
-  <a href="index.html" class="btn secondary">← Back</a>
-  <button type="submit" class="btn primary">Next</button>
-</div>
+    <!-- ✅ NEXT BUTTON MUST BE INSIDE FORM -->
+    <button type="submit" class="btn primary">Next</button>
+  </form>
 
-  </main>
+  <!-- ✅ BACK BUTTON OUTSIDE FORM -->
+  <a href="index.html" class="btn secondary" style="margin-top:20px;">
+    ← Back
+  </a>
+</main>
 
-  <script src="js/oral-status.js"></script>
+<script src="js/oral-status.js"></script>
 </body>
 </html>
