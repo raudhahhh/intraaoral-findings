@@ -203,6 +203,14 @@ input[type="checkbox"] {
   -webkit-overflow-scrolling: touch;
 }
 
+.icdas-img {
+  max-width: 600px;  
+  width: 100%;
+  height: auto;
+  display: block;
+  margin: 20px auto;
+}
+
 /* =====================
    ICDAS LEGEND
 ===================== */
@@ -452,6 +460,7 @@ select {
   padding: 8px;
   margin-bottom: 15px;
 }
+
 
 
 
