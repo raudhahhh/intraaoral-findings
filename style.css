@@ -84,6 +84,13 @@ p {
   margin-top: 24px;
 }
 
+.nav-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 30px;
+  gap: 12px;
+}
+
 
 /* =====================
    FORMS
@@ -153,6 +160,8 @@ input[type="checkbox"] {
   .btn {
     width: 100%;
     text-align: center;
+    padding: 10px 18px;
+    font-size: 0.9rem; 
   }
    .tooth {
     width: 32px;
@@ -165,7 +174,22 @@ input[type="checkbox"] {
   } 
    .divider {
     width: 12px;
+    display: none;  
   }
+   .icdas-chart {
+    min-width: unset;
+    width: 100%;
+  }
+
+  .jaw {
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .nav-buttons {
+    flex-direction: row;
+  } 
 }
 
 .icdas-scroll {
@@ -424,6 +448,7 @@ select {
   padding: 8px;
   margin-bottom: 15px;
 }
+
 
 
 
