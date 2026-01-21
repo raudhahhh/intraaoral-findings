@@ -78,6 +78,13 @@ p {
   background-color: #dee2e6;
 }
 
+.button-row {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 24px;
+}
+
+
 /* =====================
    FORMS
 ===================== */
@@ -404,6 +411,7 @@ select {
   padding: 8px;
   margin-bottom: 15px;
 }
+
 
 
 
