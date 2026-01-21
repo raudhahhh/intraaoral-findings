@@ -65,7 +65,6 @@ p {
 
 button.btn {
   border: none;
-  background: none;
 }
 
 .primary {
@@ -450,6 +449,7 @@ select {
   padding: 8px;
   margin-bottom: 15px;
 }
+
 
 
 
