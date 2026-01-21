@@ -50,14 +50,22 @@ p {
    BUTTONS
 ===================== */
 .btn {
+  font-family: inherit; 
+  font-size: 16px;
+  line-height: 1.2; 
   display: inline-block;
-  padding: 14px 28px;
+  padding: 10px 16px;
   border-radius: 8px;
   text-decoration: none;
   font-weight: 600;
   border: none;
   cursor: pointer;
   transition: 0.2s ease;
+}
+
+button.btn {
+  border: none;
+  background: none;
 }
 
 .primary {
@@ -76,12 +84,6 @@ p {
 
 .secondary:hover {
   background-color: #dee2e6;
-}
-
-.button-row {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 24px;
 }
 
 .nav-buttons {
@@ -448,6 +450,7 @@ select {
   padding: 8px;
   margin-bottom: 15px;
 }
+
 
 
 
