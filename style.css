@@ -28,6 +28,11 @@ body {
   margin-top: 15vh;
 }
 
+.tagline {
+  text-align: left;
+}
+
+
 /* =====================
    TYPOGRAPHY
 ===================== */
@@ -493,6 +498,7 @@ select {
   align-items: center;      
   margin: 30px 0;          
 }
+
 
 
 
