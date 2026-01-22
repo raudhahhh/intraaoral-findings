@@ -16,7 +16,7 @@ const icdasDetailMap = {
   3: "Restoration",
   4: "Restoration",
   5: "Investigation, Pulp Capping, Restoration, RCT, Crown and Bridge",
-  6: "Investigation, RCT, Post and Core, Extraction"
+  6: "Investigation, RCT, RDES, Extraction"
 };
 
 const bpeTreatmentMap = {
@@ -24,8 +24,8 @@ const bpeTreatmentMap = {
   "1": "No calculus or defective margins, BOP present — Oral hygiene instruction (OHI)",
   "2": "Colored area fully visible — Scaling and polishing",
   "3": "Colored area partly visible — Scaling and polishing, Root surface debridement (RSD)",
-  "4": "Colored area disappears (≥6 mm) — Scaling and polishing, Root surface debridement (RSD)",
-  "*": "Furcation involvement present"
+  "4": "Colored area disappears (≥6 mm) — Scaling and polishing, Periodontal Assessment",
+  "*": "Furcation involvement"
 };
 
 function rdesRiskLabel(score) {
