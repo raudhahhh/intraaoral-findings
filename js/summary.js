@@ -50,6 +50,12 @@ if (summaryContent) {
   const data = getPatientData();
 
   /* ===== ICDAS ===== */
+  const hasIcdas6 = Object.values(data.icdas || {}).some(
+    code => Number(code) === 6
+  );
+  if (!hasIcdas6) {
+    delete data.rdes;
+  }
   const icdasEntries = Object.entries(data.icdas || {});
 
   /* ===== BPE ===== */
@@ -124,13 +130,21 @@ if (summaryContent) {
           : "<p>No BPE recorded</p>"
       }
     </div>
-
+    const hasIcdas6 = Object.values(data.icdas || {}).some(
+    code => Number(code) === 6
+    );
     <div class="report-section">
-      <h3>🦷 RDES ASSESSMENT</h3>
-      ${
-        rdesEntries.length
-          ? `
-          ${rdesEntries
+  <h3>🦷 RDES ASSESSMENT</h3>
+
+  ${
+    !hasIcdas6
+      ? `
+        <p style="color:#2e7d32; font-weight:600;">
+          RDES assessment is not required (no ICDAS 6 detected).
+        </p>
+      `
+      : `
+        ${rdesEntries
           .map(
             ([key, score]) => `
               <p>
@@ -141,14 +155,12 @@ if (summaryContent) {
           )
           .join("")}
 
-            <p class="overall-risk ${rdesOverallRisk.replace(' ', '-').toLowerCase()}">
-            <strong>Overall RDES Risk: ${rdesOverallRisk.toUpperCase()}</strong>
-          </p>
-
-          `
-          : "<p>No RDES assessment recorded</p>"
-      }
-    </div>
+        <p class="overall-risk ${rdesOverallRisk.replace(' ', '-').toLowerCase()}">
+          <strong>Overall RDES Risk: ${rdesOverallRisk.toUpperCase()}</strong>
+        </p>
+      `
+  }
+</div>
   `;
 }
 
