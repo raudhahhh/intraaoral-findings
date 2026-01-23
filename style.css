@@ -499,6 +499,36 @@ select {
   margin: 30px 0;          
 }
 
+.overall-risk {
+  margin-top: 12px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-weight: 600;
+}
+
+/* LOW */
+.overall-risk.low-risk {
+  background-color: #e6f4ea;
+  color: #2e7d32;
+  border-left: 6px solid #2e7d32;
+}
+
+/* MODERATE */
+.overall-risk.moderate-risk {
+  background-color: #fff8e1;
+  color: #f9a825;
+  border-left: 6px solid #f9a825;
+}
+
+/* HIGH */
+.overall-risk.high-risk {
+  background-color: #fdecea;
+  color: #c62828;
+  border-left: 6px solid #c62828;
+}
+
+
+
 
 
 
