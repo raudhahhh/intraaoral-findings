@@ -141,7 +141,10 @@ if (summaryContent) {
           )
           .join("")}
 
-            <p><strong>Overall RDES Risk: ${rdesOverallRisk.toUpperCase()}</strong></p>
+            <p class="overall-risk ${rdesOverallRisk.replace(' ', '-').toLowerCase()}">
+            <strong>Overall RDES Risk: ${rdesOverallRisk.toUpperCase()}</strong>
+          </p>
+
           `
           : "<p>No RDES assessment recorded</p>"
       }
