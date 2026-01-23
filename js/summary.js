@@ -130,7 +130,6 @@ if (summaryContent) {
           : "<p>No BPE recorded</p>"
       }
     </div>
-    );
     
     <div class="report-section">
   <h3>🦷 RDES ASSESSMENT</h3>
