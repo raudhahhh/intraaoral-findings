@@ -23,7 +23,7 @@ const bpeTreatmentMap = {
   "0": "Healthy gingival tissues, no BOP — No treatment",
   "1": "No calculus or defective margins, BOP present — Oral hygiene instruction (OHI)",
   "2": "Colored area fully visible — Scaling and polishing",
-  "3": "Colored area partly visible — Scaling and polishing, Root surface debridement (RSD)",
+  "3": "Colored area partly visible — Scaling and polishing, Periodontal Assessment",
   "4": "Colored area disappears (≥6 mm) — Scaling and polishing, Periodontal Assessment",
   "*": "Furcation involvement"
 };
