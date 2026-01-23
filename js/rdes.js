@@ -162,7 +162,7 @@ function applyRiskColour(riskCell, score) {
 ========================= */
 const scoreCells = document.querySelectorAll(".rdes-score");
 
-scores.forEach(scoreCell => {
+scoresCells.forEach(scoreCell => {
   const key = scoreCell.dataset.key;
   const explanationCell = scoreCell.nextElementSibling;
   const savedScore = rdesData[key] || 1;
