@@ -130,9 +130,8 @@ if (summaryContent) {
           : "<p>No BPE recorded</p>"
       }
     </div>
-    const hasIcdas6 = Object.values(data.icdas || {}).some(
-    code => Number(code) === 6
     );
+    
     <div class="report-section">
   <h3>🦷 RDES ASSESSMENT</h3>
 
