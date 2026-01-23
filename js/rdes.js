@@ -12,6 +12,74 @@ const DEFAULT_RDES = {
   aesthetics: 1
 };
 
+const RDES_EXPLANATION = {
+  endodontic: {
+    1: "Vital tooth",
+    2: "Necrotic single root with a periapical lesion",
+    3: "Necrotic multi-root with a periapical lesion",
+    4: "Complex anatomy (calcified and/or additional canals, etc.)",
+    5: "Retreatment",
+    6: "Complex retreatment (with modification of root anatomy)"
+  },
+  vertical: {
+    1: "Four coronal residual walls",
+    2: "Three coronal residual walls",
+    3: "Two coronal residual walls",
+    4: "One coronal residual wall",
+    5: "One coronal residual wall",
+    6: "No ferrule"
+  },
+  horizontal: {
+    1: "Absence of cervical lesions or excessive internal structure removal",
+    2: "Slight cervical lesion, not requiring restoration",
+    3: "Cervical lesion requiring restoration",
+    4: "Absence of cervical lesions with excessive internal structure removal",
+    5: "Slight cervical lesion requiring restoration",
+    6: "Cervical lesion requiring restoration with excessive internal structure removal"
+  },
+  seal: {
+    1: "Margins in enamel and completely supra-gingival",
+    2: "Margins partially in enamel and dentin",
+    3: "Margins in dentin and supra-gingival",
+    4: "Margins placed juxta-gingival",
+    5: "Margins placed into the sulcus",
+    6: "Margins placed deeply into the sulcus"
+  },
+  interdisciplinary: {
+    1: "No need for interdisciplinary treatment",
+    2: "Loss of attachment without periodontal treatment",
+    3: "Need for crown lengthening (single tooth)",
+    4: "Need for ortho extrusion and crown lengthening",
+    5: "Need for ortho extrusion and crown lengthening",
+    6: "Need for periodontal surgical therapy"
+  },
+  planning: {
+    1: "Single tooth in a virgin quadrant",
+    2: "Single tooth with other restored teeth",
+    3: "Tooth as abutment of a multiunit bridge",
+    4: "Tooth as terminal distal abutment",
+    5: "Tooth as abutment of a full arch rehabilitation",
+    6: "Tooth as distal terminal abutment of full arch rehabilitation"
+  },
+  functional: {
+    1: "Free-standing restoration in favourable occlusion",
+    2: "Free-standing restoration in unfavourable occlusion",
+    3: "Short/medium span bridge (favourable occlusion)",
+    4: "Short/medium span bridge (unfavourable occlusion)",
+    5: "Long span bridge (favourable occlusion)",
+    6: "Long span bridge (unfavourable occlusion)"
+  },
+  aesthetics: {
+    1: "No dental wear and no aesthetic needs",
+    2: "Slight aesthetic need and slight dental wear",
+    3: "Aesthetic needs and mild dental wear",
+    4: "High aesthetic need and heavy dental wear",
+    5: "High aesthetic need and severe dental wear",
+    6: "Compromised function due to dental wear"
+  }
+};
+
+
 /* =========================
    LOAD PATIENT + ICDAS
 ========================= */
@@ -94,28 +162,39 @@ function applyRiskColour(riskCell, score) {
 ========================= */
 const scoreCells = document.querySelectorAll(".rdes-score");
 
-scoreCells.forEach(scoreCell => {
+scores.forEach(scoreCell => {
   const key = scoreCell.dataset.key;
-  const riskCell = scoreCell.nextElementSibling;
+  const explanationCell = scoreCell.nextElementSibling;
+  const savedScore = rdesData[key] || 1;
 
-  const score = rdesData[key] || 1;
+  scoreCell.textContent = savedScore;
+  scoreCell.classList.remove("rdes-low", "rdes-moderate", "rdes-high");
 
-  scoreCell.textContent = score;
-  riskCell.textContent = getRiskLabel(score);
-  applyRiskColour(riskCell, score);
+  if (savedScore <= 2) scoreCell.classList.add("rdes-low");
+  else if (savedScore <= 4) scoreCell.classList.add("rdes-moderate");
+  else scoreCell.classList.add("rdes-high");
+
+  explanationCell.textContent =
+    RDES_EXPLANATION[key][savedScore];
 
   scoreCell.addEventListener("click", () => {
-    let next = Number(scoreCell.textContent) + 1;
-    if (next > 6) next = 1;
+    let next = Number(scoreCell.textContent) === 6 ? 1 : Number(scoreCell.textContent) + 1;
 
     scoreCell.textContent = next;
-    riskCell.textContent = getRiskLabel(next);
-    applyRiskColour(riskCell, next);
+    scoreCell.className = "rdes-score";
+
+    if (next <= 2) scoreCell.classList.add("rdes-low");
+    else if (next <= 4) scoreCell.classList.add("rdes-moderate");
+    else scoreCell.classList.add("rdes-high");
+
+    explanationCell.textContent =
+      RDES_EXPLANATION[key][next];
 
     rdesData[key] = next;
     localStorage.setItem("rdesData", JSON.stringify(rdesData));
   });
 });
+
 
 /* =========================
    NEXT → SUMMARY
