@@ -9,6 +9,43 @@ const DEFAULT_RDES = {
   aesthetics: 1
 };
 
+const icdasSummary = document.getElementById("icdasSummary");
+
+const icdasTreatmentMap = {
+  1: "Fissure sealant",
+  2: "Fissure sealant",
+  3: "Restoration",
+  4: "Restoration",
+  5: "Investigation, Pulp Capping, Restoration, RCT, Crown and Bridge",
+  6: "Investigation, RCT, RDES, Extraction"
+};
+
+const patientData = JSON.parse(localStorage.getItem("patientData")) || {};
+const icdasData = patientData.icdas || {};
+
+if (icdasSummary) {
+  const entries = Object.entries(icdasData);
+
+  icdasSummary.innerHTML = `
+    <h3>🦷 ICDAS Findings</h3>
+    ${
+      entries.length
+        ? entries
+            .map(
+              ([tooth, code]) => `
+              <p>
+                Tooth ${tooth}: ICDAS ${code} — 
+                ${icdasTreatmentMap[code]}
+              </p>
+            `
+            )
+            .join("")
+        : "<p>No ICDAS findings recorded</p>"
+    }
+  `;
+}
+
+
 if (!localStorage.getItem("rdesData")) {
   localStorage.setItem("rdesData", JSON.stringify(DEFAULT_RDES));
 }
