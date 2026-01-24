@@ -4,6 +4,9 @@ function getPatientData() {
 
 const summaryContent = document.getElementById("summaryContent");
 
+/* =========================
+   TEXT MAPS
+========================= */
 const oralHealthDescriptions = {
   Good: "Maintain oral hygiene",
   Moderate: "Reinforcement of oral hygiene instruction",
@@ -28,12 +31,6 @@ const bpeTreatmentMap = {
   "*": "Furcation involvement"
 };
 
-function rdesRiskLabel(score) {
-  if (score <= 2) return "Low";
-  if (score <= 4) return "Moderate";
-  return "High";
-}
-
 const rdesLabelMap = {
   endodontic: "Endodontic complexity and outcome",
   vertical: "Vertical coronal residual structure",
@@ -45,29 +42,37 @@ const rdesLabelMap = {
   aesthetics: "Dental wear and aesthetics"
 };
 
+/* =========================
+   RDES HELPERS
+========================= */
+function rdesRiskLabel(score) {
+  if (score <= 2) return "Low";
+  if (score <= 4) return "Moderate";
+  return "High";
+}
 
+/* =========================
+   RENDER SUMMARY
+========================= */
 if (summaryContent) {
   const data = getPatientData();
 
   /* ===== ICDAS ===== */
-  const hasIcdas6 = Object.values(data.icdas || {}).some(
-    code => Number(code) === 6
+  const icdasEntries = Object.entries(data.icdas || []);
+  const hasIcdas6 = icdasEntries.some(
+    ([_, code]) => Number(code) === 6
   );
-  if (!hasIcdas6) {
-    delete data.rdes;
-  }
-  const icdasEntries = Object.entries(data.icdas || {});
 
   /* ===== BPE ===== */
   const bpeData = JSON.parse(localStorage.getItem("bpeData")) || {};
   const bpeCodes = Object.values(bpeData);
 
-  let maxCode = null;
-  if (bpeCodes.length > 0) {
-    const severityOrder = ["0", "1", "2", "3", "4", "*"];
-    maxCode = bpeCodes.reduce(
+  let worstBpeCode = null;
+  if (bpeCodes.length) {
+    const order = ["0", "1", "2", "3", "4", "*"];
+    worstBpeCode = bpeCodes.reduce(
       (worst, current) =>
-        severityOrder.indexOf(current) > severityOrder.indexOf(worst)
+        order.indexOf(current) > order.indexOf(worst)
           ? current
           : worst,
       "0"
@@ -75,7 +80,7 @@ if (summaryContent) {
   }
 
   /* ===== RDES ===== */
-  const rdesData = JSON.parse(localStorage.getItem("rdesData")) || {};
+  const rdesData = data.rdes || {};
   const rdesEntries = Object.entries(rdesData);
 
   const highRiskCount = rdesEntries.filter(
@@ -87,37 +92,34 @@ if (summaryContent) {
   ).length;
 
   let rdesOverallRisk = "Low risk";
-  if (highRiskCount >= 1) {
-    rdesOverallRisk = "High risk";
-  } else if (moderateRiskCount >= 2) {
-    rdesOverallRisk = "Moderate risk";
-  }
+  if (highRiskCount >= 1) rdesOverallRisk = "High risk";
+  else if (moderateRiskCount >= 2) rdesOverallRisk = "Moderate risk";
 
-  /* ===== RENDER ===== */
+  /* ===== HTML ===== */
   summaryContent.innerHTML = `
     <div class="report-section">
       <h3>👄 ORAL HYGIENE</h3>
-      <p>${
-        data.oralHealthStatus
-          ? `${data.oralHealthStatus} — ${oralHealthDescriptions[data.oralHealthStatus]}`
-          : "Not recorded"
-      }</p>
+      <p>
+        ${
+          data.oralHealthStatus
+            ? `${data.oralHealthStatus} — ${oralHealthDescriptions[data.oralHealthStatus]}`
+            : "Not recorded"
+        }
+      </p>
     </div>
 
     <div class="report-section">
       <h3>🦷 ICDAS CHART</h3>
       ${
         icdasEntries.length
-          ? icdasEntries
-              .map(
-                ([tooth, code]) => `
-                  <p>
-                    🦷 Tooth ${tooth}: ICDAS ${code} —
-                    ${icdasDetailMap[code] || "Unknown ICDAS code"}
-                  </p>
-                `
-              )
-              .join("")
+          ? icdasEntries.map(
+              ([tooth, code]) => `
+                <p>
+                  🦷 Tooth ${tooth}: ICDAS ${code} —
+                  ${icdasDetailMap[code]}
+                </p>
+              `
+            ).join("")
           : "<p>No ICDAS findings recorded</p>"
       }
     </div>
@@ -125,52 +127,47 @@ if (summaryContent) {
     <div class="report-section">
       <h3>🪥 BASIC PERIODONTAL EXAMINATION</h3>
       ${
-        maxCode
-          ? `<p><strong>Code ${maxCode}</strong> — ${bpeTreatmentMap[maxCode]}</p>`
+        worstBpeCode
+          ? `<p><strong>Code ${worstBpeCode}</strong> — ${bpeTreatmentMap[worstBpeCode]}</p>`
           : "<p>No BPE recorded</p>"
       }
     </div>
-    
+
     <div class="report-section">
-  <h3>🦷 RDES ASSESSMENT</h3>
+      <h3>🦷 RDES ASSESSMENT</h3>
+      ${
+        !hasIcdas6
+          ? `<p style="color:#2e7d32; font-weight:600;">
+              RDES assessment is not required (no ICDAS 6 detected).
+            </p>`
+          : `
+            ${rdesEntries.map(
+              ([key, score]) => `
+                <p>
+                  ${rdesLabelMap[key]}:
+                  Score ${score} (${rdesRiskLabel(score)})
+                </p>
+              `
+            ).join("")}
 
-  ${
-    !hasIcdas6
-      ? `
-        <p style="color:#2e7d32; font-weight:600;">
-          RDES assessment is not required (no ICDAS 6 detected).
-        </p>
-      `
-      : `
-        ${rdesEntries
-          .map(
-            ([key, score]) => `
-              <p>
-                ${rdesLabelMap[key] || key}:
-                Score ${score} (${rdesRiskLabel(score)})
-              </p>
-            `
-          )
-          .join("")}
-
-        <p class="overall-risk ${rdesOverallRisk.replace(' ', '-').toLowerCase()}">
-          <strong>Overall RDES Risk: ${rdesOverallRisk.toUpperCase()}</strong>
-        </p>
-      `
-  }
-</div>
+            <p class="overall-risk ${rdesOverallRisk.replace(" ", "-")}">
+              <strong>Overall RDES Risk: ${rdesOverallRisk.toUpperCase()}</strong>
+            </p>
+          `
+      }
+    </div>
   `;
 }
 
-/* ===== RESET ===== */
+/* =========================
+   RESET
+========================= */
 const resetBtn = document.getElementById("resetBtn");
 
 if (resetBtn) {
-  resetBtn.addEventListener("click", (e) => {
+  resetBtn.addEventListener("click", e => {
     e.preventDefault();
-    localStorage.removeItem("patientData");
-    localStorage.removeItem("bpeData");
-    localStorage.removeItem("rdesData");
+    localStorage.clear();
     window.location.href = "index.html";
   });
 }
