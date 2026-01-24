@@ -12,14 +12,17 @@ const DEFAULT_RDES = {
   aesthetics: 1
 };
 
+/* =========================
+   RDES EXPLANATIONS
+========================= */
 const RDES_EXPLANATION = {
   endodontic: {
     1: "Vital tooth",
     2: "Necrotic single root with a periapical lesion",
     3: "Necrotic multi-root with a periapical lesion",
-    4: "Complex anatomy (calcified and/or additional canals, etc.)",
+    4: "Complex anatomy",
     5: "Retreatment",
-    6: "Complex retreatment (with modification of root anatomy)"
+    6: "Complex retreatment"
   },
   vertical: {
     1: "Four coronal residual walls",
@@ -30,135 +33,68 @@ const RDES_EXPLANATION = {
     6: "No ferrule"
   },
   horizontal: {
-    1: "Absence of cervical lesions or excessive internal structure removal",
-    2: "Slight cervical lesion, not requiring restoration",
+    1: "No cervical lesion",
+    2: "Slight cervical lesion",
     3: "Cervical lesion requiring restoration",
-    4: "Absence of cervical lesions with excessive internal structure removal",
-    5: "Slight cervical lesion requiring restoration",
-    6: "Cervical lesion requiring restoration with excessive internal structure removal"
+    4: "Excessive internal structure removal",
+    5: "Cervical lesion + restoration",
+    6: "Severe cervical lesion"
   },
   seal: {
-    1: "Margins in enamel and completely supra-gingival",
-    2: "Margins partially in enamel and dentin",
-    3: "Margins in dentin and supra-gingival",
-    4: "Margins placed juxta-gingival",
-    5: "Margins placed into the sulcus",
-    6: "Margins placed deeply into the sulcus"
+    1: "Margins in enamel",
+    2: "Margins in enamel & dentin",
+    3: "Margins in dentin",
+    4: "Juxta-gingival margins",
+    5: "Margins into sulcus",
+    6: "Deep sulcus margins"
   },
   interdisciplinary: {
-    1: "No need for interdisciplinary treatment",
-    2: "Loss of attachment without periodontal treatment",
-    3: "Need for crown lengthening (single tooth)",
-    4: "Need for ortho extrusion and crown lengthening",
-    5: "Need for ortho extrusion and crown lengthening",
-    6: "Need for periodontal surgical therapy"
+    1: "No interdisciplinary treatment",
+    2: "Attachment loss only",
+    3: "Crown lengthening required",
+    4: "Ortho extrusion required",
+    5: "Ortho + crown lengthening",
+    6: "Periodontal surgery required"
   },
   planning: {
-    1: "Single tooth in a virgin quadrant",
-    2: "Single tooth with other restored teeth",
-    3: "Tooth as abutment of a multiunit bridge",
-    4: "Tooth as terminal distal abutment",
-    5: "Tooth as abutment of a full arch rehabilitation",
-    6: "Tooth as distal terminal abutment of full arch rehabilitation"
+    1: "Single tooth",
+    2: "Tooth among restored teeth",
+    3: "Bridge abutment",
+    4: "Terminal abutment",
+    5: "Full arch rehabilitation",
+    6: "Distal terminal abutment"
   },
   functional: {
-    1: "Free-standing restoration in favourable occlusion",
-    2: "Free-standing restoration in unfavourable occlusion",
-    3: "Short/medium span bridge (favourable occlusion)",
-    4: "Short/medium span bridge (unfavourable occlusion)",
-    5: "Long span bridge (favourable occlusion)",
-    6: "Long span bridge (unfavourable occlusion)"
+    1: "Favourable occlusion",
+    2: "Unfavourable occlusion",
+    3: "Short bridge",
+    4: "Short bridge unfavourable",
+    5: "Long bridge",
+    6: "Long bridge unfavourable"
   },
   aesthetics: {
-    1: "No dental wear and no aesthetic needs",
-    2: "Slight aesthetic need and slight dental wear",
-    3: "Aesthetic needs and mild dental wear",
-    4: "High aesthetic need and heavy dental wear",
-    5: "High aesthetic need and severe dental wear",
-    6: "Compromised function due to dental wear"
+    1: "No aesthetic need",
+    2: "Slight aesthetic need",
+    3: "Mild wear",
+    4: "High aesthetic need",
+    5: "Severe wear",
+    6: "Compromised function"
   }
 };
 
-
 /* =========================
-   LOAD PATIENT + ICDAS
+   LOAD / INIT DATA
 ========================= */
 const patientData =
   JSON.parse(localStorage.getItem("patientData")) || {};
 
-const icdasData = patientData.icdas || {};
-
-/* =========================
-   FIND ICDAS 6 TEETH ONLY
-========================= */
-const icdas6Teeth = Object.entries(icdasData)
-  .filter(([_, code]) => code === 6)
-  .map(([tooth]) => tooth);
-
-/* =========================
-   ICDAS SUMMARY (ONLY 6)
-========================= */
-const icdasSummary = document.getElementById("icdasSummary");
-
-if (icdasSummary) {
-  if (icdas6Teeth.length === 0) {
-    icdasSummary.innerHTML = `
-      <p style="color:#2e7d32; font-weight:600;">
-        No ICDAS 6 detected — RDES assessment not required.
-      </p>
-    `;
-  } else {
-    icdasSummary.innerHTML = `
-      <h3>🦷 Teeth Requiring RDES (ICDAS 6)</h3>
-      ${icdas6Teeth.map(
-        tooth => `<p>Tooth ${tooth}: ICDAS 6</p>`
-      ).join("")}
-    `;
-  }
-}
-
-/* =========================
-   HIDE RDES TABLE IF NOT NEEDED
-========================= */
-const rdesTable = document.querySelector(".rdes-table");
-
-if (icdas6Teeth.length === 0 && rdesTable) {
-  rdesTable.style.display = "none";
-}
-
-/* =========================
-   LOAD / INIT RDES DATA
-========================= */
 let rdesData = {
   ...DEFAULT_RDES,
-  ...(JSON.parse(localStorage.getItem("rdesData")) || {})
+  ...(patientData.rdes || {})
 };
 
-localStorage.setItem("rdesData", JSON.stringify(rdesData));
-
 /* =========================
-   RISK HELPERS
-========================= */
-function getRiskLabel(score) {
-  if (score <= 2) return "Low";
-  if (score <= 4) return "Moderate";
-  return "High";
-}
-
-function applyRiskColour(riskCell, score) {
-  riskCell.classList.remove(
-    "rdes-low",
-    "rdes-moderate",
-    "rdes-high"
-  );
-
-  if (score <= 2) riskCell.classList.add("rdes-low");
-  else if (score <= 4) riskCell.classList.add("rdes-moderate");
-  else riskCell.classList.add("rdes-high");
-}
-
-/* =========================
-   INIT SCORE CELLS
+   SCORE CELLS
 ========================= */
 const scoreCells = document.querySelectorAll(".rdes-score");
 
@@ -166,36 +102,32 @@ scoreCells.forEach(scoreCell => {
   const key = scoreCell.dataset.key;
   const row = scoreCell.closest("tr");
   const explanationCell = row.querySelector(".rdes-explanation");
-  const savedScore = rdesData[key] || 1;
 
-  scoreCell.textContent = savedScore;
-  scoreCell.classList.remove("rdes-low", "rdes-moderate", "rdes-high");
+  let score = rdesData[key];
 
-  if (savedScore <= 2) scoreCell.classList.add("rdes-low");
-  else if (savedScore <= 4) scoreCell.classList.add("rdes-moderate");
-  else scoreCell.classList.add("rdes-high");
-
-  explanationCell.textContent =
-    RDES_EXPLANATION[key][savedScore];
+  updateScoreUI(scoreCell, explanationCell, key, score);
 
   scoreCell.addEventListener("click", () => {
-    let next = Number(scoreCell.textContent) === 6 ? 1 : Number(scoreCell.textContent) + 1;
+    score = score === 6 ? 1 : score + 1;
+    rdesData[key] = score;
 
-    scoreCell.textContent = next;
-    scoreCell.className = "rdes-score";
-
-    if (next <= 2) scoreCell.classList.add("rdes-low");
-    else if (next <= 4) scoreCell.classList.add("rdes-moderate");
-    else scoreCell.classList.add("rdes-high");
-
-    explanationCell.textContent =
-      RDES_EXPLANATION[key][next];
-
-    rdesData[key] = next;
-    localStorage.setItem("rdesData", JSON.stringify(rdesData));
+    updateScoreUI(scoreCell, explanationCell, key, score);
   });
 });
 
+/* =========================
+   UI UPDATE
+========================= */
+function updateScoreUI(scoreCell, explanationCell, key, score) {
+  scoreCell.textContent = score;
+  scoreCell.className = "rdes-score";
+
+  if (score <= 2) scoreCell.classList.add("rdes-low");
+  else if (score <= 4) scoreCell.classList.add("rdes-moderate");
+  else scoreCell.classList.add("rdes-high");
+
+  explanationCell.textContent = RDES_EXPLANATION[key][score];
+}
 
 /* =========================
    NEXT → SUMMARY
