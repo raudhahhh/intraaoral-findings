@@ -56,6 +56,6 @@ if (saveIcdasBtn) {
     });
 
     savePatientData(data);
-    window.location.href = "rdes.html";
+    window.location.href = "summary.html";
   });
 }
