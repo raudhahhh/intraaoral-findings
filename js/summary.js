@@ -62,6 +62,8 @@ if (summaryContent) {
   const hasIcdas6 = icdasEntries.some(
     ([_, code]) => Number(code) === 6
   );
+  const rdesCompleted = data.rdesCompleted === true;
+
 
   /* ===== BPE ===== */
   const bpeData = JSON.parse(localStorage.getItem("bpeData")) || {};
@@ -81,10 +83,10 @@ if (summaryContent) {
 
 const goToRdesBtn = document.getElementById("goToRdesBtn");
 
-if (goToRdesBtn && hasIcdas6) {
-  goToRdesBtn.style.display = "inline-block";
+if (goToRdesBtn) {
+  goToRdesBtn.style.display =
+    hasIcdas6 && !rdesCompleted ? "inline-block" : "none";
 }
-
 
   /* ===== RDES ===== */
   const rdesData = data.rdes || {};
@@ -140,18 +142,24 @@ if (goToRdesBtn && hasIcdas6) {
       }
     </div>
 
-    <div class="report-section">
+  <div class="report-section">
   <h3>🦷 RDES ASSESSMENT</h3>
+
   ${
     !hasIcdas6
       ? `<p style="color:#2e7d32; font-weight:600;">
-          RDES assessment is not required (no ICDAS 6 detected).
+          RDES assessment is not required.
+        </p>`
+      : rdesCompleted
+      ? `<p style="color:#2e7d32; font-weight:600;">
+          RDES assessment completed.
         </p>`
       : `<p style="color:#f57c00; font-weight:600;">
-          ICDAS 6 detected — further RDES assessment is required.
+          RDES assessment required.
         </p>`
   }
 </div>
+
 
     </div>
   `;
