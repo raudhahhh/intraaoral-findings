@@ -105,20 +105,47 @@ icdas6Teeth.forEach(tooth => {
   }
 });
 
+localStorage.setItem("patientData", JSON.stringify(patientData));
+
+/* =========================
+   DOM
+========================= */
+const tabsContainer = document.getElementById("rdesTabs");
+const rdesContainer = document.getElementById("rdesContainer");
+
+let activeTooth = icdas6Teeth[0];
+
+/* =========================
+   TABS
+========================= */
+function renderTabs() {
+  tabsContainer.innerHTML = icdas6Teeth.map(tooth => `
+    <button
+      class="rdes-tab ${tooth === activeTooth ? "active" : ""}"
+      data-tooth="${tooth}">
+      Tooth ${tooth}
+    </button>
+  `).join("");
+
+  document.querySelectorAll(".rdes-tab").forEach(btn => {
+    btn.addEventListener("click", () => {
+      activeTooth = btn.dataset.tooth;
+      renderTabs();
+      renderTable(activeTooth);
+    });
+  });
+}
 /* =========================
    RENDER TABLES
 ========================= */
-const rdesContainer = document.getElementById("rdesContainer");
-rdesContainer.innerHTML = "";
-
-icdas6Teeth.forEach(tooth => {
+function renderTable(tooth) {
   const rdes = patientData.rdes[tooth];
 
-  const tableHTML = `
+  rdesContainer.innerHTML = `
     <div class="report-section">
       <h3>🦷 Tooth ${tooth}</h3>
 
-      <table class="rdes-table" data-tooth="${tooth}">
+      <table class="rdes-table">
         <thead>
           <tr>
             <th>Parameter</th>
@@ -129,13 +156,9 @@ icdas6Teeth.forEach(tooth => {
         <tbody>
           ${Object.keys(rdes).map(key => `
             <tr>
-              <td>${key.replace(/([A-Z])/g, " $1")}</td>
-              <td class="rdes-score" data-tooth="${tooth}" data-key="${key}">
-                ${rdes[key]}
-              </td>
-              <td class="rdes-explanation">
-                ${RDES_EXPLANATION[key][rdes[key]]}
-              </td>
+              <td>${key}</td>
+              <td class="rdes-score" data-key="${key}">${rdes[key]}</td>
+              <td class="rdes-explanation">${RDES_EXPLANATION[key][rdes[key]]}</td>
             </tr>
           `).join("")}
         </tbody>
@@ -143,46 +166,37 @@ icdas6Teeth.forEach(tooth => {
     </div>
   `;
 
-  rdesContainer.insertAdjacentHTML("beforeend", tableHTML);
-});
-
+  attachScoreHandlers(tooth);
+}
 /* =========================
    SCORE INTERACTION
 ========================= */
-document.querySelectorAll(".rdes-score").forEach(scoreCell => {
-  const tooth = scoreCell.dataset.tooth;
-  const key = scoreCell.dataset.key;
-  const explanationCell =
-    scoreCell.closest("tr").querySelector(".rdes-explanation");
+function attachScoreHandlers(tooth) {
+  document.querySelectorAll(".rdes-score").forEach(cell => {
+    const key = cell.dataset.key;
+    const explanationCell = cell.nextElementSibling;
 
-  let score = patientData.rdes[tooth][key];
-  updateScoreUI(scoreCell, explanationCell, key, score);
+    cell.addEventListener("click", () => {
+      let score = patientData.rdes[tooth][key];
+      score = score === 6 ? 1 : score + 1;
 
-  scoreCell.addEventListener("click", () => {
-    score = score === 6 ? 1 : score + 1;
-    patientData.rdes[tooth][key] = score;
+      patientData.rdes[tooth][key] = score;
+      cell.textContent = score;
+      explanationCell.textContent = RDES_EXPLANATION[key][score];
 
-    updateScoreUI(scoreCell, explanationCell, key, score);
-    localStorage.setItem("patientData", JSON.stringify(patientData));
+      localStorage.setItem("patientData", JSON.stringify(patientData));
+    });
   });
-});
-
-/* =========================
-   UI UPDATE
-========================= */
-function updateScoreUI(scoreCell, explanationCell, key, score) {
-  scoreCell.textContent = score;
-  scoreCell.className = "rdes-score";
-
-  if (score <= 2) scoreCell.classList.add("rdes-low");
-  else if (score <= 4) scoreCell.classList.add("rdes-moderate");
-  else scoreCell.classList.add("rdes-high");
-
-  explanationCell.textContent = RDES_EXPLANATION[key][score];
 }
 
 /* =========================
-   NEXT → SUMMARY
+   INIT
+========================= */
+renderTabs();
+renderTable(activeTooth);
+
+/* =========================
+   NEXT
 ========================= */
 document.getElementById("nextBtn").addEventListener("click", () => {
   patientData.rdesCompleted = true;
