@@ -102,20 +102,7 @@ if (goToRdesBtn) {
 
   /* ===== RDES ===== */
   const rdesData = data.rdes || {};
-  const rdesEntries = Object.entries(rdesData);
-
-  const highRiskCount = rdesEntries.filter(
-    ([_, score]) => score >= 5
-  ).length;
-
-  const moderateRiskCount = rdesEntries.filter(
-    ([_, score]) => score >= 3 && score <= 4
-  ).length;
-
-  let rdesOverallRisk = "Low risk";
-  if (highRiskCount >= 1) rdesOverallRisk = "High risk";
-  else if (moderateRiskCount >= 2) rdesOverallRisk = "Moderate risk";
-
+  
   /* ===== HTML ===== */
   summaryContent.innerHTML = `
     <div class="report-section">
@@ -181,6 +168,7 @@ if (goToRdesBtn) {
   }
 </div>
 
+ `;
 
 /* =========================
    RESET
