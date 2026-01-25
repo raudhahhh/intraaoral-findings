@@ -134,27 +134,18 @@ if (summaryContent) {
     </div>
 
     <div class="report-section">
-      <h3>🦷 RDES ASSESSMENT</h3>
-      ${
-        !hasIcdas6
-          ? `<p style="color:#2e7d32; font-weight:600;">
-              RDES assessment is not required (no ICDAS 6 detected).
-            </p>`
-          : `
-            ${rdesEntries.map(
-              ([key, score]) => `
-                <p>
-                  ${rdesLabelMap[key]}:
-                  Score ${score} (${rdesRiskLabel(score)})
-                </p>
-              `
-            ).join("")}
+  <h3>🦷 RDES ASSESSMENT</h3>
+  ${
+    !hasIcdas6
+      ? `<p style="color:#2e7d32; font-weight:600;">
+          RDES assessment is not required (no ICDAS 6 detected).
+        </p>`
+      : `<p style="color:#f57c00; font-weight:600;">
+          ICDAS 6 detected — further RDES assessment is required.
+        </p>`
+  }
+</div>
 
-            <p class="overall-risk ${rdesOverallRisk.replace(" ", "-")}">
-              <strong>Overall RDES Risk: ${rdesOverallRisk.toUpperCase()}</strong>
-            </p>
-          `
-      }
     </div>
   `;
 }
