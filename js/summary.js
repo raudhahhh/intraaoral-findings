@@ -31,17 +31,6 @@ const bpeTreatmentMap = {
   "*": "Furcation involvement"
 };
 
-const rdesLabelMap = {
-  endodontic: "Endodontic complexity and outcome",
-  vertical: "Vertical coronal residual structure",
-  horizontal: "Horizontal coronal residual structure",
-  seal: "Restoration marginal seal",
-  interdisciplinary: "Local interdisciplinary condition",
-  planning: "Complexity of treatment planning",
-  functional: "Functional need",
-  aesthetics: "Dental wear and aesthetics"
-};
-
 /* =========================
    RDES HELPERS
 ========================= */
@@ -52,16 +41,11 @@ function rdesRiskLabel(score) {
 }
 
 function calculateToothRdesRisk(rdesObj) {
-  const scores = Object.values(rdesObj);
-
-  // Convert each parameter score → risk label
-  const risks = scores.map(rdesRiskLabel);
-
+  const risks = Object.values(rdesObj).map(rdesRiskLabel);
   if (risks.includes("High")) return "High";
   if (risks.filter(r => r === "Moderate").length >= 2) return "Moderate";
   return "Low";
 }
-
 
 /* =========================
    RENDER SUMMARY
@@ -70,116 +54,76 @@ if (summaryContent) {
   const data = getPatientData();
 
   /* ===== ICDAS ===== */
-  const icdasEntries = Object.entries(data.icdas || []);
-  const hasIcdas6 = icdasEntries.some(
-    ([_, code]) => Number(code) === 6
-  );
+  const icdasEntries = Object.entries(data.icdas || {});
+  const hasIcdas6 = icdasEntries.some(([_, c]) => Number(c) === 6);
   const rdesCompleted = data.rdesCompleted === true;
-
 
   /* ===== BPE ===== */
   const bpeData = JSON.parse(localStorage.getItem("bpeData")) || {};
   const bpeCodes = Object.values(bpeData);
+  const order = ["0", "1", "2", "3", "4", "*"];
 
-  let worstBpeCode = null;
-  if (bpeCodes.length) {
-    const order = ["0", "1", "2", "3", "4", "*"];
-    worstBpeCode = bpeCodes.reduce(
-      (worst, current) =>
-        order.indexOf(current) > order.indexOf(worst)
-          ? current
-          : worst,
-      "0"
-    );
-  }
-
-const goToRdesBtn = document.getElementById("goToRdesBtn");
-
-if (goToRdesBtn) {
-  goToRdesBtn.style.display =
-    hasIcdas6 && !rdesCompleted ? "inline-block" : "none";
-}
+  const worstBpeCode = bpeCodes.length
+    ? bpeCodes.reduce(
+        (a, b) => (order.indexOf(b) > order.indexOf(a) ? b : a),
+        "0"
+      )
+    : null;
 
   /* ===== RDES ===== */
   const rdesData = data.rdes || {};
-  const isPerTooth =
-  Object.values(rdesData).every(
+  const isPerTooth = Object.values(rdesData).every(
     v => typeof v === "object" && v !== null
   );
 
-  /* ===== HTML ===== */
   summaryContent.innerHTML = `
     <div class="report-section">
       <h3>👄 ORAL HYGIENE</h3>
-      <p>
-        ${
-          data.oralHealthStatus
-            ? `${data.oralHealthStatus} — ${oralHealthDescriptions[data.oralHealthStatus]}`
-            : "Not recorded"
-        }
-      </p>
+      <p>${data.oralHealthStatus
+        ? `${data.oralHealthStatus} — ${oralHealthDescriptions[data.oralHealthStatus]}`
+        : "Not recorded"}</p>
     </div>
 
     <div class="report-section">
       <h3>🦷 ICDAS CHART</h3>
-      ${
-        icdasEntries.length
-          ? icdasEntries.map(
-              ([tooth, code]) => `
-                <p>
-                  🦷 Tooth ${tooth}: ICDAS ${code} —
-                  ${icdasDetailMap[code]}
-                </p>
-              `
-            ).join("")
-          : "<p>No ICDAS findings recorded</p>"
-      }
+      ${icdasEntries.length
+        ? icdasEntries.map(([t, c]) =>
+            `<p>🦷 Tooth ${t}: ICDAS ${c} — ${icdasDetailMap[c]}</p>`
+          ).join("")
+        : "<p>No ICDAS findings recorded</p>"}
     </div>
 
     <div class="report-section">
       <h3>🪥 BASIC PERIODONTAL EXAMINATION</h3>
-      ${
-        worstBpeCode
-          ? `<p><strong>Code ${worstBpeCode}</strong> — ${bpeTreatmentMap[worstBpeCode]}</p>`
-          : "<p>No BPE recorded</p>"
-      }
+      ${worstBpeCode
+        ? `<p><strong>Code ${worstBpeCode}</strong> — ${bpeTreatmentMap[worstBpeCode]}</p>`
+        : "<p>No BPE recorded</p>"}
     </div>
 
-  <div class="report-section">
-  <h3>🦷 RDES ASSESSMENT</h3>
+    <div class="report-section">
+      <h3>🦷 RDES ASSESSMENT</h3>
 
-  ${
-    !hasIcdas6
-      ? `<p style="color:#2e7d32;font-weight:600;">
-          RDES assessment is not required.
-        </p>`
-
-      : !rdesCompleted
-      ? `<p style="color:#f57c00;font-weight:600;">
-          RDES assessment required.
-        </p>`
-
-      : !isPerTooth
-      ? `<p style="color:#c62828;font-weight:600;">
-          RDES data incomplete. Please reassess.
-        </p>`
-
-      : Object.entries(rdesData).map(([tooth, rdesObj]) => {
-          const risk = calculateToothRdesRisk(rdesObj);
-          return `
-            <p class="rdes-tooth-risk ${risk.toLowerCase()}">
-              🦷 Tooth ${tooth} — <strong>${risk.toUpperCase()} RISK</strong>
-            </p>
-          `;
-        }).join("")
-  }
-</div>
+      ${!hasIcdas6
+        ? `<p class="rdes-tooth-risk low">RDES not required</p>`
+        : !rdesCompleted
+        ? `<p class="rdes-tooth-risk moderate">RDES assessment required</p>`
+        : !isPerTooth
+        ? `<p class="rdes-tooth-risk high">RDES data incomplete</p>`
+        : Object.entries(rdesData).map(([tooth, rdesObj]) => {
+            const risk = calculateToothRdesRisk(rdesObj);
+            return `
+              <p class="rdes-tooth-risk ${risk.toLowerCase()}">
+                🦷 Tooth ${tooth} — <strong>${risk.toUpperCase()} RISK</strong>
+              </p>`;
+          }).join("")}
+    </div>
+  `;
+}
 
 /* =========================
    RESET
 ========================= */
 const resetBtn = document.getElementById("resetBtn");
-
 if (resetBtn) {
   resetBtn.addEventListener("click", e => {
     e.preventDefault();
