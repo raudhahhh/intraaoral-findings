@@ -135,6 +135,15 @@ function renderTabs() {
     });
   });
 }
+
+function applyRiskColour(cell, score) {
+  cell.classList.remove("rdes-low", "rdes-moderate", "rdes-high");
+
+  if (score <= 2) cell.classList.add("rdes-low");
+  else if (score <= 4) cell.classList.add("rdes-moderate");
+  else cell.classList.add("rdes-high");
+}
+
 /* =========================
    RENDER TABLES
 ========================= */
@@ -171,10 +180,14 @@ function renderTable(tooth) {
 /* =========================
    SCORE INTERACTION
 ========================= */
-function attachScoreHandlers(tooth) {
-  document.querySelectorAll(".rdes-score").forEach(cell => {
-    const key = cell.dataset.key;
-    const explanationCell = cell.nextElementSibling;
+
+
+document.querySelectorAll(".rdes-score").forEach(cell => {
+  const key = cell.dataset.key;
+  const explanationCell = cell.nextElementSibling; 
+  const score = patientData.rdes[tooth][key];
+  applyRiskColour(cell, score);
+});
 
     cell.addEventListener("click", () => {
       let score = patientData.rdes[tooth][key];
@@ -182,6 +195,7 @@ function attachScoreHandlers(tooth) {
 
       patientData.rdes[tooth][key] = score;
       cell.textContent = score;
+      applyRiskColour(cell, score);
       explanationCell.textContent = RDES_EXPLANATION[key][score];
 
       localStorage.setItem("patientData", JSON.stringify(patientData));
