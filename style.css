@@ -494,6 +494,28 @@ select {
   margin-bottom: 15px;
 }
 
+.rdes-tabs {
+  display: flex;
+  gap: 10px;
+  margin: 20px 0;
+  flex-wrap: wrap;
+}
+
+.rdes-tab {
+  padding: 8px 14px;
+  border-radius: 20px;
+  border: 1px solid #ccc;
+  background: #f5f5f5;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.rdes-tab.active {
+  background: #1976d2;
+  color: white;
+  border-color: #1976d2;
+}
+
 
 /* =====================
    Images
@@ -526,6 +548,7 @@ select {
   align-items: center;      
   margin: 30px 0;          
 }
+
 
 
 
