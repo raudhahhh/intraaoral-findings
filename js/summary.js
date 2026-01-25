@@ -3,6 +3,7 @@ function getPatientData() {
 }
 
 const summaryContent = document.getElementById("summaryContent");
+const goToRdesBtn = document.getElementById("goToRdesBtn");
 
 /* =========================
    TEXT MAPS
@@ -72,50 +73,73 @@ if (summaryContent) {
 
   /* ===== RDES ===== */
   const rdesData = data.rdes || {};
-  const isPerTooth = Object.values(rdesData).every(
-    v => typeof v === "object" && v !== null
-  );
+  const isPerTooth =
+    Object.keys(rdesData).length > 0 &&
+    Object.values(rdesData).every(v => typeof v === "object" && v !== null);
 
+  /* ===== BUTTON VISIBILITY (IMPORTANT FIX) ===== */
+  if (goToRdesBtn) {
+    if (hasIcdas6 && !rdesCompleted) {
+      goToRdesBtn.style.display = "inline-block";
+    } else {
+      goToRdesBtn.style.display = "none";
+    }
+  }
+
+  /* ===== HTML ===== */
   summaryContent.innerHTML = `
     <div class="report-section">
       <h3>👄 ORAL HYGIENE</h3>
-      <p>${data.oralHealthStatus
-        ? `${data.oralHealthStatus} — ${oralHealthDescriptions[data.oralHealthStatus]}`
-        : "Not recorded"}</p>
+      <p>${
+        data.oralHealthStatus
+          ? `${data.oralHealthStatus} — ${oralHealthDescriptions[data.oralHealthStatus]}`
+          : "Not recorded"
+      }</p>
     </div>
 
     <div class="report-section">
       <h3>🦷 ICDAS CHART</h3>
-      ${icdasEntries.length
-        ? icdasEntries.map(([t, c]) =>
-            `<p>🦷 Tooth ${t}: ICDAS ${c} — ${icdasDetailMap[c]}</p>`
-          ).join("")
-        : "<p>No ICDAS findings recorded</p>"}
+      ${
+        icdasEntries.length
+          ? icdasEntries
+              .map(
+                ([t, c]) =>
+                  `<p>🦷 Tooth ${t}: ICDAS ${c} — ${icdasDetailMap[c]}</p>`
+              )
+              .join("")
+          : "<p>No ICDAS findings recorded</p>"
+      }
     </div>
 
     <div class="report-section">
       <h3>🪥 BASIC PERIODONTAL EXAMINATION</h3>
-      ${worstBpeCode
-        ? `<p><strong>Code ${worstBpeCode}</strong> — ${bpeTreatmentMap[worstBpeCode]}</p>`
-        : "<p>No BPE recorded</p>"}
+      ${
+        worstBpeCode
+          ? `<p><strong>Code ${worstBpeCode}</strong> — ${bpeTreatmentMap[worstBpeCode]}</p>`
+          : "<p>No BPE recorded</p>"
+      }
     </div>
 
     <div class="report-section">
       <h3>🦷 RDES ASSESSMENT</h3>
 
-      ${!hasIcdas6
-        ? `<p class="rdes-tooth-risk low">RDES not required</p>`
-        : !rdesCompleted
-        ? `<p class="rdes-tooth-risk moderate">RDES assessment required</p>`
-        : !isPerTooth
-        ? `<p class="rdes-tooth-risk high">RDES data incomplete</p>`
-        : Object.entries(rdesData).map(([tooth, rdesObj]) => {
-            const risk = calculateToothRdesRisk(rdesObj);
-            return `
-              <p class="rdes-tooth-risk ${risk.toLowerCase()}">
-                🦷 Tooth ${tooth} — <strong>${risk.toUpperCase()} RISK</strong>
-              </p>`;
-          }).join("")}
+      ${
+        !hasIcdas6
+          ? `<p class="rdes-tooth-risk low">RDES not required</p>`
+          : !rdesCompleted
+          ? `<p class="rdes-tooth-risk moderate">RDES assessment required</p>`
+          : !isPerTooth
+          ? `<p class="rdes-tooth-risk high">RDES data incomplete</p>`
+          : Object.entries(rdesData)
+              .map(([tooth, rdesObj]) => {
+                const risk = calculateToothRdesRisk(rdesObj);
+                return `
+                  <p class="rdes-tooth-risk ${risk.toLowerCase()}">
+                    🦷 Tooth ${tooth} — <strong>${risk.toUpperCase()} RISK</strong>
+                  </p>`;
+              })
+              .join("")
+      }
     </div>
   `;
 }
