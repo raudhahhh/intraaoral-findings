@@ -102,7 +102,11 @@ if (goToRdesBtn) {
 
   /* ===== RDES ===== */
   const rdesData = data.rdes || {};
-  
+  const isPerTooth =
+  Object.values(rdesData).every(
+    v => typeof v === "object" && v !== null
+  );
+
   /* ===== HTML ===== */
   summaryContent.innerHTML = `
     <div class="report-section">
@@ -155,20 +159,21 @@ if (goToRdesBtn) {
           RDES assessment required.
         </p>`
 
-      : `
-        ${Object.entries(data.rdes).map(([tooth, rdesObj]) => {
+      : !isPerTooth
+      ? `<p style="color:#c62828;font-weight:600;">
+          RDES data incomplete. Please reassess.
+        </p>`
+
+      : Object.entries(rdesData).map(([tooth, rdesObj]) => {
           const risk = calculateToothRdesRisk(rdesObj);
           return `
             <p class="rdes-tooth-risk ${risk.toLowerCase()}">
               🦷 Tooth ${tooth} — <strong>${risk.toUpperCase()} RISK</strong>
             </p>
           `;
-        }).join("")}
-      `
+        }).join("")
   }
 </div>
-
- `;
 
 /* =========================
    RESET
