@@ -137,6 +137,7 @@ const nextBtn = document.getElementById("nextBtn");
 if (nextBtn) {
   nextBtn.addEventListener("click", () => {
     patientData.rdes = rdesData;
+    patientData.rdesCompleted = true;  
     localStorage.setItem("patientData", JSON.stringify(patientData));
     window.location.href = "summary.html";
   });
