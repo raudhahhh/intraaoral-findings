@@ -246,14 +246,22 @@ function updateScoreUI(scoreCell, explanationCell, key, score) {
 const nextBtn = document.getElementById("nextBtn");
 
 function checkAllAssessed() {
-  // Check if all teeth have been assessed (all parameters changed from default)
+  // Check if each tooth has at least one parameter assessed (changed from default)
   for (const tooth in rdesData) {
     const scores = rdesData[tooth];
+    let hasAssessment = false;
+
+    // Check if at least one parameter is not the default value (1)
     for (const key in scores) {
-      // If any score is still at default value (1), not all assessed
-      if (scores[key] === 1) {
-        return false;
+      if (scores[key] !== 1) {
+        hasAssessment = true;
+        break;
       }
+    }
+
+    // If this tooth has no assessments, return false
+    if (!hasAssessment) {
+      return false;
     }
   }
   return true;
