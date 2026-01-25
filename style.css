@@ -633,3 +633,23 @@ select {
     transform: translateY(0);
   }
 }
+/* =====================
+  REEFERENCE
+===================== */
+.reference-text {
+  margin-top: 40px;
+  font-size: 0.7rem;
+  color: #b71c1c;
+  opacity: 0.85;
+   line-height: 1.4;
+  text-align: left;
+}
+
+.reference-divider {
+  margin-top: 30px;
+  margin-bottom: 12px;
+  border: none;
+  border-top: 1px solid #eee;
+}
+
+
