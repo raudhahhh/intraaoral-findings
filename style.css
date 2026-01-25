@@ -163,21 +163,21 @@ input[type="checkbox"] {
 }
 
 /* LOW */
-.overall-risk.low-risk {
+.rdes-tooth-risk.low {
   background-color: #e6f4ea;
   color: #2e7d32;
   border-left: 6px solid #2e7d32;
 }
 
 /* MODERATE */
-.overall-risk.moderate-risk {
+.rdes-tooth-risk.moderate {
   background-color: #fff8e1;
   color: #f9a825;
   border-left: 6px solid #f9a825;
 }
 
 /* HIGH */
-.overall-risk.high-risk {
+.rdes-tooth-risk.high {
   background-color: #fdecea;
   color: #c62828;
   border-left: 6px solid #c62828;
@@ -548,6 +548,7 @@ select {
   align-items: center;      
   margin: 30px 0;          
 }
+
 
 
 
