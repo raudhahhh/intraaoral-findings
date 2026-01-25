@@ -83,8 +83,13 @@ const icdas6Teeth = Object.entries(patientData.icdas || {})
   .filter(([_, code]) => Number(code) === 6)
   .map(([tooth]) => tooth);
 
+if (icdas6Teeth.length === 0) {
+  alert("No ICDAS 6 teeth found. RDES not required.");
+  window.location.href = "summary.html";
+}
+
 /* =========================
-   DEFAULT RDES PER TOOTH
+   DEFAULT RDES
 ========================= */
 function createDefaultRDES() {
   return {
@@ -105,20 +110,31 @@ icdas6Teeth.forEach(tooth => {
   }
 });
 
-localStorage.setItem("patientData", JSON.stringify(patientData));
-
 /* =========================
    DOM
 ========================= */
 const tabsContainer = document.getElementById("rdesTabs");
 const rdesContainer = document.getElementById("rdesContainer");
+const nextBtn = document.getElementById("nextBtn");
 
 let activeTooth = icdas6Teeth[0];
+
+/* =========================
+   HELPERS
+========================= */
+function applyRiskColour(cell, score) {
+  cell.classList.remove("rdes-low", "rdes-moderate", "rdes-high");
+  if (score <= 2) cell.classList.add("rdes-low");
+  else if (score <= 4) cell.classList.add("rdes-moderate");
+  else cell.classList.add("rdes-high");
+}
 
 /* =========================
    TABS
 ========================= */
 function renderTabs() {
+  if (!tabsContainer) return;
+
   tabsContainer.innerHTML = icdas6Teeth.map(tooth => `
     <button
       class="rdes-tab ${tooth === activeTooth ? "active" : ""}"
@@ -127,7 +143,7 @@ function renderTabs() {
     </button>
   `).join("");
 
-  document.querySelectorAll(".rdes-tab").forEach(btn => {
+  tabsContainer.querySelectorAll(".rdes-tab").forEach(btn => {
     btn.addEventListener("click", () => {
       activeTooth = btn.dataset.tooth;
       renderTabs();
@@ -136,16 +152,8 @@ function renderTabs() {
   });
 }
 
-function applyRiskColour(cell, score) {
-  cell.classList.remove("rdes-low", "rdes-moderate", "rdes-high");
-
-  if (score <= 2) cell.classList.add("rdes-low");
-  else if (score <= 4) cell.classList.add("rdes-moderate");
-  else cell.classList.add("rdes-high");
-}
-
 /* =========================
-   RENDER TABLES
+   TABLE
 ========================= */
 function renderTable(tooth) {
   const rdes = patientData.rdes[tooth];
@@ -153,7 +161,6 @@ function renderTable(tooth) {
   rdesContainer.innerHTML = `
     <div class="report-section">
       <h3>🦷 Tooth ${tooth}</h3>
-
       <table class="rdes-table">
         <thead>
           <tr>
@@ -165,9 +172,11 @@ function renderTable(tooth) {
         <tbody>
           ${Object.keys(rdes).map(key => `
             <tr>
-              <td>${key}</td>
+              <td>${key.replace(/([A-Z])/g, " $1")}</td>
               <td class="rdes-score" data-key="${key}">${rdes[key]}</td>
-              <td class="rdes-explanation">${RDES_EXPLANATION[key][rdes[key]]}</td>
+              <td class="rdes-explanation">
+                ${RDES_EXPLANATION[key][rdes[key]]}
+              </td>
             </tr>
           `).join("")}
         </tbody>
@@ -178,29 +187,29 @@ function renderTable(tooth) {
   attachScoreHandlers(tooth);
 }
 
+/* =========================
+   INTERACTION
+========================= */
 function attachScoreHandlers(tooth) {
-  document.querySelectorAll(".rdes-score").forEach(cell => {
+  rdesContainer.querySelectorAll(".rdes-score").forEach(cell => {
     const key = cell.dataset.key;
     const explanationCell = cell.nextElementSibling;
 
     let score = patientData.rdes[tooth][key];
-
-    // initial colour
     applyRiskColour(cell, score);
 
     cell.addEventListener("click", () => {
       score = score === 6 ? 1 : score + 1;
-
       patientData.rdes[tooth][key] = score;
+
       cell.textContent = score;
-      applyRiskColour(cell, score);
       explanationCell.textContent = RDES_EXPLANATION[key][score];
+      applyRiskColour(cell, score);
 
       localStorage.setItem("patientData", JSON.stringify(patientData));
     });
   });
 }
-
 
 /* =========================
    INIT
@@ -211,7 +220,7 @@ renderTable(activeTooth);
 /* =========================
    NEXT
 ========================= */
-document.getElementById("nextBtn").addEventListener("click", () => {
+nextBtn.addEventListener("click", () => {
   patientData.rdesCompleted = true;
   localStorage.setItem("patientData", JSON.stringify(patientData));
   window.location.href = "summary.html";
