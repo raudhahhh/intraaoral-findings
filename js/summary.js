@@ -81,83 +81,97 @@ if (summaryContent) {
     );
   }
 
-const goToRdesBtn = document.getElementById("goToRdesBtn");
+  const goToRdesBtn = document.getElementById("goToRdesBtn");
 
-if (goToRdesBtn) {
-  goToRdesBtn.style.display =
-    hasIcdas6 && !rdesCompleted ? "inline-block" : "none";
-}
+  if (goToRdesBtn) {
+    if (hasIcdas6) {
+      goToRdesBtn.style.display = "inline-block";
+      if (rdesCompleted) {
+        goToRdesBtn.textContent = "Edit RDES";
+      } else {
+        goToRdesBtn.textContent = "Next → RDES";
+      }
+    } else {
+      goToRdesBtn.style.display = "none";
+    }
+  }
 
   /* ===== RDES ===== */
   const rdesData = data.rdes || {};
-  const rdesEntries = Object.entries(rdesData);
 
-  const highRiskCount = rdesEntries.filter(
-    ([_, score]) => score >= 5
-  ).length;
+  // Helper to calculate risk for a single tooth's scores
+  function calculateRisk(scores) {
+    const values = Object.values(scores);
+    const highRiskCount = values.filter(v => v >= 5).length;
+    const moderateRiskCount = values.filter(v => v >= 3 && v <= 4).length;
 
-  const moderateRiskCount = rdesEntries.filter(
-    ([_, score]) => score >= 3 && score <= 4
-  ).length;
+    if (highRiskCount >= 1) return "High risk";
+    if (moderateRiskCount >= 2) return "Moderate risk";
+    return "Low risk";
+  }
 
-  let rdesOverallRisk = "Low risk";
-  if (highRiskCount >= 1) rdesOverallRisk = "High risk";
-  else if (moderateRiskCount >= 2) rdesOverallRisk = "Moderate risk";
+  // Generate HTML for each tooth
+  const rdesSummaryHTML = Object.entries(rdesData).map(([tooth, scores]) => {
+    const risk = calculateRisk(scores);
+    let riskClass = "low-risk";
+    if (risk === "High risk") riskClass = "high-risk";
+    else if (risk === "Moderate risk") riskClass = "moderate-risk";
+
+    return `
+      <div class="overall-risk ${riskClass}" style="margin-bottom: 10px;">
+        <strong>Tooth ${tooth}:</strong> ${risk}
+      </div>
+    `;
+  }).join("");
 
   /* ===== HTML ===== */
   summaryContent.innerHTML = `
     <div class="report-section">
       <h3>👄 ORAL HYGIENE</h3>
       <p>
-        ${
-          data.oralHealthStatus
-            ? `${data.oralHealthStatus} — ${oralHealthDescriptions[data.oralHealthStatus]}`
-            : "Not recorded"
-        }
+        ${data.oralHealthStatus
+      ? `${data.oralHealthStatus} — ${oralHealthDescriptions[data.oralHealthStatus]}`
+      : "Not recorded"
+    }
       </p>
     </div>
 
     <div class="report-section">
       <h3>🦷 ICDAS CHART</h3>
-      ${
-        icdasEntries.length
-          ? icdasEntries.map(
-              ([tooth, code]) => `
+      ${icdasEntries.length
+      ? icdasEntries.map(
+        ([tooth, code]) => `
                 <p>
                   🦷 Tooth ${tooth}: ICDAS ${code} —
                   ${icdasDetailMap[code]}
                 </p>
               `
-            ).join("")
-          : "<p>No ICDAS findings recorded</p>"
-      }
+      ).join("")
+      : "<p>No ICDAS findings recorded</p>"
+    }
     </div>
 
     <div class="report-section">
       <h3>🪥 BASIC PERIODONTAL EXAMINATION</h3>
-      ${
-        worstBpeCode
-          ? `<p><strong>Code ${worstBpeCode}</strong> — ${bpeTreatmentMap[worstBpeCode]}</p>`
-          : "<p>No BPE recorded</p>"
-      }
+      ${worstBpeCode
+      ? `<p><strong>Code ${worstBpeCode}</strong> — ${bpeTreatmentMap[worstBpeCode]}</p>`
+      : "<p>No BPE recorded</p>"
+    }
     </div>
 
   <div class="report-section">
   <h3>🦷 RDES ASSESSMENT</h3>
 
-  ${
-    !hasIcdas6
+  ${!hasIcdas6
       ? `<p style="color:#2e7d32; font-weight:600;">
           RDES assessment is not required.
         </p>`
       : rdesCompleted
-      ? `<p style="color:#2e7d32; font-weight:600;">
-          RDES assessment completed.
-        </p>`
-      : `<p style="color:#f57c00; font-weight:600;">
+        ? `<div>${rdesSummaryHTML}</div>`
+        : `<p style="color:#f57c00; font-weight:600;">
           RDES assessment required.
         </p>`
-  }
+    }
 </div>
 
 
