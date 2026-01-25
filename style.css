@@ -55,9 +55,9 @@ p {
    BUTTONS
 ===================== */
 .btn {
-  font-family: inherit; 
+  font-family: inherit;
   font-size: 16px;
-  line-height: 1.2; 
+  line-height: 1.2;
   display: inline-block;
   padding: 10px 16px;
   border-radius: 8px;
@@ -129,7 +129,7 @@ form {
   border-color: #0d6efd;
 }
 
-.card input:checked + span {
+.card input:checked+span {
   font-weight: 600;
 }
 
@@ -195,23 +195,27 @@ input[type="checkbox"] {
     width: 100%;
     text-align: center;
     padding: 10px 18px;
-    font-size: 0.9rem; 
+    font-size: 0.9rem;
   }
-   .tooth {
+
+  .tooth {
     width: 32px;
     height: 32px;
     font-size: 0.7rem;
-    border-width: 1px;  
+    border-width: 1px;
   }
+
   .quadrant {
     grid-template-columns: repeat(8, 1fr);
     gap: 4px;
-  } 
-   .divider {
-    width: 12px;
-    display: none;  
   }
-   .icdas-chart {
+
+  .divider {
+    width: 12px;
+    display: none;
+  }
+
+  .icdas-chart {
     min-width: unset;
     width: 100%;
   }
@@ -220,12 +224,12 @@ input[type="checkbox"] {
     flex-direction: column;
     align-items: center;
     gap: 12px;
-    justify-content: center; 
+    justify-content: center;
   }
 
   .nav-buttons {
     flex-direction: row;
-  } 
+  }
 }
 
 .icdas-scroll {
@@ -237,7 +241,7 @@ input[type="checkbox"] {
 }
 
 .icdas-img {
-  max-width: 600px;  
+  max-width: 600px;
   width: 100%;
   height: auto;
   display: block;
@@ -270,7 +274,7 @@ input[type="checkbox"] {
 .icdas-legend li {
   display: flex;
   align-items: center;
-  gap: 12px; 
+  gap: 12px;
   font-size: 0.95rem;
 }
 
@@ -286,12 +290,29 @@ input[type="checkbox"] {
 
 
 /* ICDAS colors */
-.icdas-0 { background: #ffffff; }
-.icdas-1 { background: #b6e3ff; }
-.icdas-3 { background: #ffd966; }
-.icdas-4 { background: #ffb347; }
-.icdas-5 { background: #ff6b6b; }
-.icdas-6 { background: #8b0000; }
+.icdas-0 {
+  background: #ffffff;
+}
+
+.icdas-1 {
+  background: #b6e3ff;
+}
+
+.icdas-3 {
+  background: #ffd966;
+}
+
+.icdas-4 {
+  background: #ffb347;
+}
+
+.icdas-5 {
+  background: #ff6b6b;
+}
+
+.icdas-6 {
+  background: #8b0000;
+}
 
 /* =====================
    TOOTH GRID
@@ -331,7 +352,7 @@ input[type="checkbox"] {
   font-weight: 600;
   font-size: 0.8rem;
   background: #f9f9f9;
-  aspect-ratio: 1 / 1; 
+  aspect-ratio: 1 / 1;
 }
 
 .tooth:hover {
@@ -347,7 +368,8 @@ input[type="checkbox"] {
   border-collapse: collapse;
 }
 
-.bpe-table td, .bpe-table th {
+.bpe-table td,
+.bpe-table th {
   border: 2px solid #333;
   width: 120px;
   height: 70px;
@@ -360,12 +382,29 @@ input[type="checkbox"] {
   font-weight: bold;
 }
 
-.code-0 { background: #c8e6c9; }
-.code-1 { background: #fff9c4; }
-.code-2 { background: #ffe0b2; }
-.code-3 { background: #ffccbc; }
-.code-4 { background: #ffcdd2; }
-.code-star { background: #e1bee7; }
+.code-0 {
+  background: #c8e6c9;
+}
+
+.code-1 {
+  background: #fff9c4;
+}
+
+.code-2 {
+  background: #ffe0b2;
+}
+
+.code-3 {
+  background: #ffccbc;
+}
+
+.code-4 {
+  background: #ffcdd2;
+}
+
+.code-star {
+  background: #e1bee7;
+}
 
 .legend {
   max-width: 700px;
@@ -501,65 +540,79 @@ select {
 
 .bpe-images {
   display: flex;
-  flex-direction: column;   
-  gap: 20px;                
+  flex-direction: column;
+  gap: 20px;
   max-width: 600px;
-  margin: 30px auto;        
+  margin: 30px auto;
 }
 
 .bpe-img {
   width: 100%;
   height: auto;
   display: block;
-  border-radius: 10px; 
+  border-radius: 10px;
   background: #fff;
   padding: 12px;
   border-radius: 12px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.05); 
-  max-width: 100% 
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  max-width: 100%
 }
 
 .bpe-images-wrapper {
   display: flex;
-  flex-direction: column;   
-  gap: 24px;                
-  align-items: center;      
-  margin: 30px 0;          
+  flex-direction: column;
+  gap: 24px;
+  align-items: center;
+  margin: 30px 0;
 }
 
+/* =====================
+   TABS
+===================== */
+.tabs-header {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
 
+.tab-btn {
+  padding: 10px 20px;
+  background: #e9ecef;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  color: #555;
+  transition: 0.2s;
+}
 
+.tab-btn:hover {
+  background: #dee2e6;
+}
 
+.tab-btn.active {
+  background: #0d6efd;
+  color: #fff;
+}
 
+.tab-pane {
+  display: none;
+}
 
+.tab-pane.active {
+  display: block;
+  animation: fadeIn 0.3s ease;
+}
 
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
