@@ -220,6 +220,9 @@ function attachScoreListeners() {
 
       // Update UI
       updateScoreUI(cell, explanationCell, key, score);
+
+      // Check if all assessed and update button state
+      updateNextButton();
     });
   });
 }
@@ -238,12 +241,48 @@ function updateScoreUI(scoreCell, explanationCell, key, score) {
 }
 
 /* =========================
-   NEXT → SUMMARY
+   VALIDATION & NEXT BUTTON
 ========================= */
 const nextBtn = document.getElementById("nextBtn");
 
+function checkAllAssessed() {
+  // Check if all teeth have been assessed (all parameters changed from default)
+  for (const tooth in rdesData) {
+    const scores = rdesData[tooth];
+    for (const key in scores) {
+      // If any score is still at default value (1), not all assessed
+      if (scores[key] === 1) {
+        return false;
+      }
+    }
+  }
+  return true;
+}
+
+function updateNextButton() {
+  if (!nextBtn) return;
+
+  const allAssessed = checkAllAssessed();
+
+  if (allAssessed) {
+    nextBtn.disabled = false;
+    nextBtn.classList.remove("disabled");
+  } else {
+    nextBtn.disabled = true;
+    nextBtn.classList.add("disabled");
+  }
+}
+
+// Initial check
+updateNextButton();
+
 if (nextBtn) {
   nextBtn.addEventListener("click", () => {
+    if (!checkAllAssessed()) {
+      alert("Please assess all RDES parameters for all teeth before proceeding.");
+      return;
+    }
+
     patientData.rdes = rdesData;
     patientData.rdesCompleted = true;
     localStorage.setItem("patientData", JSON.stringify(patientData));
