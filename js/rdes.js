@@ -1,18 +1,4 @@
 /* =========================
-   DEFAULT RDES VALUES
-========================= */
-const DEFAULT_RDES = {
-  endodontic: 1,
-  vertical: 1,
-  horizontal: 1,
-  seal: 1,
-  interdisciplinary: 1,
-  planning: 1,
-  functional: 1,
-  aesthetics: 1
-};
-
-/* =========================
    RDES EXPLANATIONS
 ========================= */
 const RDES_EXPLANATION = {
@@ -93,25 +79,56 @@ let rdesData = {
   ...(patientData.rdes || {})
 };
 
+const icdas6Teeth = Object.entries(patientData.icdas || {})
+  .filter(([_, code]) => Number(code) === 6)
+  .map(([tooth]) => tooth);
+
 /* =========================
-   SCORE CELLS
+   DEFAULT RDES VALUES
 ========================= */
-const scoreCells = document.querySelectorAll(".rdes-score");
+function createDefaultRDES() {
+  return {
+    endodontic: 1,
+    vertical: 1,
+    horizontal: 1,
+    seal: 1,
+    interdisciplinary: 1,
+    planning: 1,
+    functional: 1,
+    aesthetics: 1
+  };
+}
 
-scoreCells.forEach(scoreCell => {
-  const key = scoreCell.dataset.key;
-  const row = scoreCell.closest("tr");
-  const explanationCell = row.querySelector(".rdes-explanation");
+icdas6Teeth.forEach(tooth => {
+  if (!patientData.rdes[tooth]) {
+    patientData.rdes[tooth] = createDefaultRDES();
+  }
+});
 
-  let score = rdesData[key];
+/* =========================
+   TABLE UPDATE
+========================= */
+document.querySelectorAll(".rdes-table").forEach(table => {
+  const tooth = table.dataset.tooth;
+  const toothRdes = patientData.rdes[tooth];
 
-  updateScoreUI(scoreCell, explanationCell, key, score);
+  table.querySelectorAll(".rdes-score").forEach(scoreCell => {
+    const key = scoreCell.dataset.key;
+    const row = scoreCell.closest("tr");
+    const explanationCell = row.querySelector(".rdes-explanation");
 
-  scoreCell.addEventListener("click", () => {
-    score = score === 6 ? 1 : score + 1;
-    rdesData[key] = score;
+    let score = toothRdes[key];
 
     updateScoreUI(scoreCell, explanationCell, key, score);
+
+    scoreCell.addEventListener("click", () => {
+      score = score === 6 ? 1 : score + 1;
+      toothRdes[key] = score;
+
+      updateScoreUI(scoreCell, explanationCell, key, score);
+
+      localStorage.setItem("patientData", JSON.stringify(patientData));
+    });
   });
 });
 
