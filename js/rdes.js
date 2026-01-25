@@ -85,41 +85,149 @@ const RDES_EXPLANATION = {
 /* =========================
    LOAD / INIT DATA
 ========================= */
-const patientData =
-  JSON.parse(localStorage.getItem("patientData")) || {};
+const patientData = JSON.parse(localStorage.getItem("patientData")) || {};
+const icdasData = patientData.icdas || {};
 
-let rdesData = {
-  ...DEFAULT_RDES,
-  ...(patientData.rdes || {})
-};
+// Find teeth with ICDAS score 6
+const affectedTeeth = Object.keys(icdasData).filter(
+  tooth => Number(icdasData[tooth]) === 6
+);
 
-/* =========================
-   SCORE CELLS
-========================= */
-const scoreCells = document.querySelectorAll(".rdes-score");
+// Initialize RDES data structure if needed
+// New structure: { "18": { ...scores }, "24": { ...scores } }
+let rdesData = patientData.rdes || {};
 
-scoreCells.forEach(scoreCell => {
-  const key = scoreCell.dataset.key;
-  const row = scoreCell.closest("tr");
-  const explanationCell = row.querySelector(".rdes-explanation");
+// Ensure each affected tooth has an entry
+affectedTeeth.forEach(tooth => {
+  if (!rdesData[tooth]) {
+    rdesData[tooth] = { ...DEFAULT_RDES };
+  }
+});
 
-  let score = rdesData[key];
-
-  updateScoreUI(scoreCell, explanationCell, key, score);
-
-  scoreCell.addEventListener("click", () => {
-    score = score === 6 ? 1 : score + 1;
-    rdesData[key] = score;
-
-    updateScoreUI(scoreCell, explanationCell, key, score);
-  });
+// Clean up entries for teeth that no longer have score 6 (optional, but good for hygiene)
+Object.keys(rdesData).forEach(tooth => {
+  if (Number(icdasData[tooth]) !== 6) {
+    delete rdesData[tooth];
+  }
 });
 
 /* =========================
-   UI UPDATE
+   UI GENERATION
 ========================= */
+const container = document.getElementById("rdes-container");
+
+if (container && affectedTeeth.length > 0) {
+  // 1. Create Tabs Header
+  const tabsHeader = document.createElement("div");
+  tabsHeader.className = "tabs-header";
+
+  // 2. Create Content Container
+  const contentContainer = document.createElement("div");
+
+  affectedTeeth.forEach((tooth, index) => {
+    // --- TAB BUTTON ---
+    const btn = document.createElement("button");
+    btn.className = `tab-btn ${index === 0 ? "active" : ""}`;
+    btn.textContent = `Tooth ${tooth}`;
+    btn.dataset.target = `tab-${tooth}`;
+
+    btn.addEventListener("click", () => {
+      // Deactivate all
+      document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+      document.querySelectorAll(".tab-pane").forEach(p => p.classList.remove("active"));
+
+      // Activate current
+      btn.classList.add("active");
+      document.getElementById(`tab-${tooth}`).classList.add("active");
+    });
+
+    tabsHeader.appendChild(btn);
+
+    // --- TAB PANE (TABLE) ---
+    const pane = document.createElement("div");
+    pane.id = `tab-${tooth}`;
+    pane.className = `tab-pane ${index === 0 ? "active" : ""}`;
+
+    pane.innerHTML = `
+      <table class="rdes-table">
+        <thead>
+          <tr>
+            <th>Parameter</th>
+            <th>Score</th>
+            <th>Clinical Explanation</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${Object.keys(DEFAULT_RDES).map(key => `
+            <tr>
+              <td>${formatKey(key)}</td>
+              <td class="rdes-score" data-tooth="${tooth}" data-key="${key}">
+                ${rdesData[tooth][key]}
+              </td>
+              <td class="rdes-explanation" id="exp-${tooth}-${key}">
+                ${RDES_EXPLANATION[key][rdesData[tooth][key]]}
+              </td>
+            </tr>
+          `).join("")}
+        </tbody>
+      </table>
+    `;
+
+    contentContainer.appendChild(pane);
+  });
+
+  container.appendChild(tabsHeader);
+  container.appendChild(contentContainer);
+
+  // Add event listeners to the new dynamic scores
+  attachScoreListeners();
+
+} else if (container) {
+  container.innerHTML = "<p>No teeth with ICDAS Score 6 found.</p>";
+}
+
+function formatKey(key) {
+  const labels = {
+    endodontic: "Endodontic complexity and outcome",
+    vertical: "Vertical coronal residual structure",
+    horizontal: "Horizontal coronal residual structure",
+    seal: "Restoration marginal seal",
+    interdisciplinary: "Local interdisciplinary condition",
+    planning: "Complexity of treatment planning",
+    functional: "Functional need",
+    aesthetics: "Dental wear and aesthetics"
+  };
+  return labels[key] || key;
+}
+
+/* =========================
+   INTERACTION
+========================= */
+function attachScoreListeners() {
+  document.querySelectorAll(".rdes-score").forEach(cell => {
+    const tooth = cell.dataset.tooth;
+    const key = cell.dataset.key;
+    const explanationCell = document.getElementById(`exp-${tooth}-${key}`);
+
+    updateScoreUI(cell, explanationCell, key, rdesData[tooth][key]);
+
+    cell.addEventListener("click", () => {
+      let score = rdesData[tooth][key];
+      score = score === 6 ? 1 : score + 1;
+
+      // Update Data
+      rdesData[tooth][key] = score;
+
+      // Update UI
+      updateScoreUI(cell, explanationCell, key, score);
+    });
+  });
+}
+
 function updateScoreUI(scoreCell, explanationCell, key, score) {
   scoreCell.textContent = score;
+
+  // Reset classes
   scoreCell.className = "rdes-score";
 
   if (score <= 2) scoreCell.classList.add("rdes-low");
@@ -137,7 +245,7 @@ const nextBtn = document.getElementById("nextBtn");
 if (nextBtn) {
   nextBtn.addEventListener("click", () => {
     patientData.rdes = rdesData;
-    patientData.rdesCompleted = true;  
+    patientData.rdesCompleted = true;
     localStorage.setItem("patientData", JSON.stringify(patientData));
     window.location.href = "summary.html";
   });
