@@ -55,6 +55,9 @@ if (saveIcdasBtn) {
       }
     });
 
+    // Reset RDES completion status since ICDAS data changed
+    data.rdesCompleted = false;
+
     savePatientData(data);
     window.location.href = "summary.html";
   });
