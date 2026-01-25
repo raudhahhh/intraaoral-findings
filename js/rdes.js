@@ -177,20 +177,18 @@ function renderTable(tooth) {
 
   attachScoreHandlers(tooth);
 }
-/* =========================
-   SCORE INTERACTION
-========================= */
 
+function attachScoreHandlers(tooth) {
+  document.querySelectorAll(".rdes-score").forEach(cell => {
+    const key = cell.dataset.key;
+    const explanationCell = cell.nextElementSibling;
 
-document.querySelectorAll(".rdes-score").forEach(cell => {
-  const key = cell.dataset.key;
-  const explanationCell = cell.nextElementSibling; 
-  const score = patientData.rdes[tooth][key];
-  applyRiskColour(cell, score);
-});
+    let score = patientData.rdes[tooth][key];
+
+    // initial colour
+    applyRiskColour(cell, score);
 
     cell.addEventListener("click", () => {
-      let score = patientData.rdes[tooth][key];
       score = score === 6 ? 1 : score + 1;
 
       patientData.rdes[tooth][key] = score;
@@ -202,6 +200,7 @@ document.querySelectorAll(".rdes-score").forEach(cell => {
     });
   });
 }
+
 
 /* =========================
    INIT
