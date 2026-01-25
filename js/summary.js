@@ -79,6 +79,13 @@ if (summaryContent) {
     );
   }
 
+const goToRdesBtn = document.getElementById("goToRdesBtn");
+
+if (goToRdesBtn && hasIcdas6) {
+  goToRdesBtn.style.display = "inline-block";
+}
+
+
   /* ===== RDES ===== */
   const rdesData = data.rdes || {};
   const rdesEntries = Object.entries(rdesData);
