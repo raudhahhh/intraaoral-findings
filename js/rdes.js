@@ -74,11 +74,6 @@ const RDES_EXPLANATION = {
 const patientData =
   JSON.parse(localStorage.getItem("patientData")) || {};
 
-let rdesData = {
-  ...DEFAULT_RDES,
-  ...(patientData.rdes || {})
-};
-
 const icdas6Teeth = Object.entries(patientData.icdas || {})
   .filter(([_, code]) => Number(code) === 6)
   .map(([tooth]) => tooth);
@@ -103,6 +98,86 @@ icdas6Teeth.forEach(tooth => {
   if (!patientData.rdes[tooth]) {
     patientData.rdes[tooth] = createDefaultRDES();
   }
+});
+
+const rdesContainer = document.getElementById("rdesContainer");
+
+icdas6Teeth.forEach(tooth => {
+  const rdes = patientData.rdes[tooth];
+
+  const tableHTML = `
+    <div class="report-section">
+      <h3>🦷 Tooth ${tooth}</h3>
+
+      <table class="rdes-table" data-tooth="${tooth}">
+        <thead>
+          <tr>
+            <th>Parameter</th>
+            <th>Score</th>
+            <th>Clinical Explanation</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${Object.keys(rdes).map(key => `
+            <tr>
+              <td>${key.replace(/([A-Z])/g, " $1")}</td>
+              <td class="rdes-score"
+                  data-tooth="${tooth}"
+                  data-key="${key}">
+                ${rdes[key]}
+              </td>
+              <td class="rdes-explanation">
+                ${RDES_EXPLANATION[key][rdes[key]]}
+              </td>
+            </tr>
+          `).join("")}
+        </tbody>
+      </table>
+    </div>
+  `;
+
+  rdesContainer.insertAdjacentHTML("beforeend", tableHTML);
+});
+/* =========================
+   RENDER
+========================= */
+const rdesContainer = document.getElementById("rdesContainer");
+
+icdas6Teeth.forEach(tooth => {
+  const rdes = patientData.rdes[tooth];
+
+  const tableHTML = `
+    <div class="report-section">
+      <h3>🦷 Tooth ${tooth}</h3>
+
+      <table class="rdes-table" data-tooth="${tooth}">
+        <thead>
+          <tr>
+            <th>Parameter</th>
+            <th>Score</th>
+            <th>Clinical Explanation</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${Object.keys(rdes).map(key => `
+            <tr>
+              <td>${key.replace(/([A-Z])/g, " $1")}</td>
+              <td class="rdes-score"
+                  data-tooth="${tooth}"
+                  data-key="${key}">
+                ${rdes[key]}
+              </td>
+              <td class="rdes-explanation">
+                ${RDES_EXPLANATION[key][rdes[key]]}
+              </td>
+            </tr>
+          `).join("")}
+        </tbody>
+      </table>
+    </div>
+  `;
+
+  rdesContainer.insertAdjacentHTML("beforeend", tableHTML);
 });
 
 /* =========================
@@ -146,6 +221,8 @@ function updateScoreUI(scoreCell, explanationCell, key, score) {
   explanationCell.textContent = RDES_EXPLANATION[key][score];
 }
 
+
+
 /* =========================
    NEXT → SUMMARY
 ========================= */
@@ -153,7 +230,6 @@ const nextBtn = document.getElementById("nextBtn");
 
 if (nextBtn) {
   nextBtn.addEventListener("click", () => {
-    patientData.rdes = rdesData;
     patientData.rdesCompleted = true;  
     localStorage.setItem("patientData", JSON.stringify(patientData));
     window.location.href = "summary.html";
