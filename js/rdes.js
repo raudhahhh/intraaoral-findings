@@ -1,4 +1,18 @@
 /* =========================
+   DEFAULT RDES VALUES
+========================= */
+const DEFAULT_RDES = {
+  endodontic: 1,
+  vertical: 1,
+  horizontal: 1,
+  seal: 1,
+  interdisciplinary: 1,
+  planning: 1,
+  functional: 1,
+  aesthetics: 1
+};
+
+/* =========================
    RDES EXPLANATIONS
 ========================= */
 const RDES_EXPLANATION = {
@@ -69,159 +83,62 @@ const RDES_EXPLANATION = {
 };
 
 /* =========================
-   LOAD PATIENT DATA
+   LOAD / INIT DATA
 ========================= */
 const patientData =
   JSON.parse(localStorage.getItem("patientData")) || {};
 
-patientData.rdes = patientData.rdes || {};
+let rdesData = {
+  ...DEFAULT_RDES,
+  ...(patientData.rdes || {})
+};
 
 /* =========================
-   FIND ICDAS 6 TEETH
+   SCORE CELLS
 ========================= */
-const icdas6Teeth = Object.entries(patientData.icdas || {})
-  .filter(([_, code]) => Number(code) === 6)
-  .map(([tooth]) => tooth);
+const scoreCells = document.querySelectorAll(".rdes-score");
 
-if (icdas6Teeth.length === 0) {
-  alert("No ICDAS 6 teeth found. RDES not required.");
-  window.location.href = "summary.html";
-}
+scoreCells.forEach(scoreCell => {
+  const key = scoreCell.dataset.key;
+  const row = scoreCell.closest("tr");
+  const explanationCell = row.querySelector(".rdes-explanation");
 
-/* =========================
-   DEFAULT RDES
-========================= */
-function createDefaultRDES() {
-  return {
-    endodontic: 1,
-    vertical: 1,
-    horizontal: 1,
-    seal: 1,
-    interdisciplinary: 1,
-    planning: 1,
-    functional: 1,
-    aesthetics: 1
-  };
-}
+  let score = rdesData[key];
 
-icdas6Teeth.forEach(tooth => {
-  if (!patientData.rdes[tooth]) {
-    patientData.rdes[tooth] = createDefaultRDES();
-  }
+  updateScoreUI(scoreCell, explanationCell, key, score);
+
+  scoreCell.addEventListener("click", () => {
+    score = score === 6 ? 1 : score + 1;
+    rdesData[key] = score;
+
+    updateScoreUI(scoreCell, explanationCell, key, score);
+  });
 });
 
 /* =========================
-   DOM
+   UI UPDATE
 ========================= */
-const tabsContainer = document.getElementById("rdesTabs");
-const rdesContainer = document.getElementById("rdesContainer");
+function updateScoreUI(scoreCell, explanationCell, key, score) {
+  scoreCell.textContent = score;
+  scoreCell.className = "rdes-score";
+
+  if (score <= 2) scoreCell.classList.add("rdes-low");
+  else if (score <= 4) scoreCell.classList.add("rdes-moderate");
+  else scoreCell.classList.add("rdes-high");
+
+  explanationCell.textContent = RDES_EXPLANATION[key][score];
+}
+
+/* =========================
+   NEXT → SUMMARY
+========================= */
 const nextBtn = document.getElementById("nextBtn");
 
-let activeTooth = icdas6Teeth[0];
-
-/* =========================
-   HELPERS
-========================= */
-function applyRiskColour(cell, score) {
-  cell.classList.remove("rdes-low", "rdes-moderate", "rdes-high");
-  if (score <= 2) cell.classList.add("rdes-low");
-  else if (score <= 4) cell.classList.add("rdes-moderate");
-  else cell.classList.add("rdes-high");
-}
-
-/* =========================
-   TABS
-========================= */
-function renderTabs() {
-  if (!tabsContainer) return;
-
-  tabsContainer.innerHTML = icdas6Teeth.map(tooth => `
-    <button
-      class="rdes-tab ${tooth === activeTooth ? "active" : ""}"
-      data-tooth="${tooth}">
-      Tooth ${tooth}
-    </button>
-  `).join("");
-
-  tabsContainer.querySelectorAll(".rdes-tab").forEach(btn => {
-    btn.addEventListener("click", () => {
-      activeTooth = btn.dataset.tooth;
-      renderTabs();
-      renderTable(activeTooth);
-    });
+if (nextBtn) {
+  nextBtn.addEventListener("click", () => {
+    patientData.rdes = rdesData;
+    patientData.rdesCompleted = true;  
+    localStorage.setItem("patientData", JSON.stringify(patientData));
+    window.location.href = "summary.html";
   });
 }
-
-/* =========================
-   TABLE
-========================= */
-function renderTable(tooth) {
-  const rdes = patientData.rdes[tooth];
-
-  rdesContainer.innerHTML = `
-    <div class="report-section">
-      <h3>🦷 Tooth ${tooth}</h3>
-      <table class="rdes-table">
-        <thead>
-          <tr>
-            <th>Parameter</th>
-            <th>Score</th>
-            <th>Clinical Explanation</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${Object.keys(rdes).map(key => `
-            <tr>
-              <td>${key.replace(/([A-Z])/g, " $1")}</td>
-              <td class="rdes-score" data-key="${key}">${rdes[key]}</td>
-              <td class="rdes-explanation">
-                ${RDES_EXPLANATION[key][rdes[key]]}
-              </td>
-            </tr>
-          `).join("")}
-        </tbody>
-      </table>
-    </div>
-  `;
-
-  attachScoreHandlers(tooth);
-}
-
-/* =========================
-   INTERACTION
-========================= */
-function attachScoreHandlers(tooth) {
-  rdesContainer.querySelectorAll(".rdes-score").forEach(cell => {
-    const key = cell.dataset.key;
-    const explanationCell = cell.nextElementSibling;
-
-    let score = patientData.rdes[tooth][key];
-    applyRiskColour(cell, score);
-
-    cell.addEventListener("click", () => {
-      score = score === 6 ? 1 : score + 1;
-      patientData.rdes[tooth][key] = score;
-
-      cell.textContent = score;
-      explanationCell.textContent = RDES_EXPLANATION[key][score];
-      applyRiskColour(cell, score);
-
-      localStorage.setItem("patientData", JSON.stringify(patientData));
-    });
-  });
-}
-
-/* =========================
-   INIT
-========================= */
-renderTabs();
-renderTable(activeTooth);
-
-/* =========================
-   NEXT
-========================= */
-nextBtn.addEventListener("click", () => {
-  patientData.rdesCompleted = true;
-  localStorage.setItem("patientData", JSON.stringify(patientData));
-  window.location.href = "summary.html";
-});
