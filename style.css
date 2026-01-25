@@ -97,6 +97,16 @@ button.btn {
   gap: 12px;
 }
 
+/* =====================
+   DISABLED STATE
+===================== */
+.btn:disabled,
+.btn.disabled {
+  background-color: #ccc !important;
+  cursor: not-allowed !important;
+  opacity: 0.6 !important;
+}
+
 
 /* =====================
    FORMS
@@ -526,6 +536,13 @@ input[type="checkbox"] {
   background-color: #fdecea;
   color: #c62828;
   font-weight: 600;
+}
+
+.rdes-unselected {
+  background-color: #f8f9fa;
+  color: #999;
+  font-style: italic;
+  border: 1px dashed #ccc;
 }
 
 select {
