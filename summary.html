@@ -6,26 +6,33 @@
   <title>Summary & Treatment Plan</title>
   <link rel="stylesheet" href="style.css" />
 </head>
+
 <body>
+  <main class="container" role="main">
+    <header>
+      <h2>Summary & Treatment Plan</h2>
+    </header>
 
-  <main class="container">
-    <h2>Summary & Treatment Plan</h2>
+    <!-- Dynamic Summary -->
+    <section id="summaryContent" aria-live="polite"></section>
 
-    <div id="summaryContent"></div>
+    <!-- Navigation / Actions -->
+    <footer class="nav-buttons" style="margin-top:30px;">
+      <a href="icdas.html" class="btn secondary">
+        ← Back
+      </a>
 
-   <div style="display:flex; justify-content:space-between; margin-top:30px;">
-  <a href="icdas.html" class="btn secondary">← Back</a> 
-  <div class="nav-buttons">
-  <a href="index.html" class="btn secondary" id="resetBtn">
-    Start New Assessment
-  </a>
-  <a href="rdes.html" class="btn primary" id="goToRdesBtn" style="display:none;">
-    Next → RDES
-  </a>
-</div>
+      <div style="display:flex; gap:12px;">
+        <a href="index.html" class="btn secondary" id="resetBtn">
+          Start New Assessment
+        </a>
 
-</div>
-
+        <!-- Controlled by summary.js -->
+        <a href="rdes.html" class="btn primary" id="goToRdesBtn" style="display:none;">
+          Next → RDES
+        </a>
+      </div>
+    </footer>
   </main>
 
   <script src="js/summary.js"></script>
