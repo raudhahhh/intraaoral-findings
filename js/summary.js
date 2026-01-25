@@ -51,6 +51,18 @@ function rdesRiskLabel(score) {
   return "High";
 }
 
+function calculateToothRdesRisk(rdesObj) {
+  const scores = Object.values(rdesObj);
+
+  // Convert each parameter score → risk label
+  const risks = scores.map(rdesRiskLabel);
+
+  if (risks.includes("High")) return "High";
+  if (risks.filter(r => r === "Moderate").length >= 2) return "Moderate";
+  return "Low";
+}
+
+
 /* =========================
    RENDER SUMMARY
 ========================= */
@@ -147,23 +159,28 @@ if (goToRdesBtn) {
 
   ${
     !hasIcdas6
-      ? `<p style="color:#2e7d32; font-weight:600;">
+      ? `<p style="color:#2e7d32;font-weight:600;">
           RDES assessment is not required.
         </p>`
-      : rdesCompleted
-      ? `<p style="color:#2e7d32; font-weight:600;">
-          RDES assessment completed.
-        </p>`
-      : `<p style="color:#f57c00; font-weight:600;">
+
+      : !rdesCompleted
+      ? `<p style="color:#f57c00;font-weight:600;">
           RDES assessment required.
         </p>`
+
+      : `
+        ${Object.entries(data.rdes).map(([tooth, rdesObj]) => {
+          const risk = calculateToothRdesRisk(rdesObj);
+          return `
+            <p class="rdes-tooth-risk ${risk.toLowerCase()}">
+              🦷 Tooth ${tooth} — <strong>${risk.toUpperCase()} RISK</strong>
+            </p>
+          `;
+        }).join("")}
+      `
   }
 </div>
 
-
-    </div>
-  `;
-}
 
 /* =========================
    RESET
