@@ -69,17 +69,22 @@ const RDES_EXPLANATION = {
 };
 
 /* =========================
-   LOAD / INIT DATA
+   LOAD PATIENT DATA
 ========================= */
 const patientData =
   JSON.parse(localStorage.getItem("patientData")) || {};
 
+patientData.rdes = patientData.rdes || {};
+
+/* =========================
+   FIND ICDAS 6 TEETH
+========================= */
 const icdas6Teeth = Object.entries(patientData.icdas || {})
   .filter(([_, code]) => Number(code) === 6)
   .map(([tooth]) => tooth);
 
 /* =========================
-   DEFAULT RDES VALUES
+   DEFAULT RDES PER TOOTH
 ========================= */
 function createDefaultRDES() {
   return {
@@ -100,7 +105,11 @@ icdas6Teeth.forEach(tooth => {
   }
 });
 
+/* =========================
+   RENDER TABLES
+========================= */
 const rdesContainer = document.getElementById("rdesContainer");
+rdesContainer.innerHTML = "";
 
 icdas6Teeth.forEach(tooth => {
   const rdes = patientData.rdes[tooth];
@@ -121,50 +130,7 @@ icdas6Teeth.forEach(tooth => {
           ${Object.keys(rdes).map(key => `
             <tr>
               <td>${key.replace(/([A-Z])/g, " $1")}</td>
-              <td class="rdes-score"
-                  data-tooth="${tooth}"
-                  data-key="${key}">
-                ${rdes[key]}
-              </td>
-              <td class="rdes-explanation">
-                ${RDES_EXPLANATION[key][rdes[key]]}
-              </td>
-            </tr>
-          `).join("")}
-        </tbody>
-      </table>
-    </div>
-  `;
-
-  rdesContainer.insertAdjacentHTML("beforeend", tableHTML);
-});
-/* =========================
-   RENDER
-========================= */
-const rdesContainer = document.getElementById("rdesContainer");
-
-icdas6Teeth.forEach(tooth => {
-  const rdes = patientData.rdes[tooth];
-
-  const tableHTML = `
-    <div class="report-section">
-      <h3>🦷 Tooth ${tooth}</h3>
-
-      <table class="rdes-table" data-tooth="${tooth}">
-        <thead>
-          <tr>
-            <th>Parameter</th>
-            <th>Score</th>
-            <th>Clinical Explanation</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${Object.keys(rdes).map(key => `
-            <tr>
-              <td>${key.replace(/([A-Z])/g, " $1")}</td>
-              <td class="rdes-score"
-                  data-tooth="${tooth}"
-                  data-key="${key}">
+              <td class="rdes-score" data-tooth="${tooth}" data-key="${key}">
                 ${rdes[key]}
               </td>
               <td class="rdes-explanation">
@@ -181,29 +147,23 @@ icdas6Teeth.forEach(tooth => {
 });
 
 /* =========================
-   TABLE UPDATE
+   SCORE INTERACTION
 ========================= */
-document.querySelectorAll(".rdes-table").forEach(table => {
-  const tooth = table.dataset.tooth;
-  const toothRdes = patientData.rdes[tooth];
+document.querySelectorAll(".rdes-score").forEach(scoreCell => {
+  const tooth = scoreCell.dataset.tooth;
+  const key = scoreCell.dataset.key;
+  const explanationCell =
+    scoreCell.closest("tr").querySelector(".rdes-explanation");
 
-  table.querySelectorAll(".rdes-score").forEach(scoreCell => {
-    const key = scoreCell.dataset.key;
-    const row = scoreCell.closest("tr");
-    const explanationCell = row.querySelector(".rdes-explanation");
+  let score = patientData.rdes[tooth][key];
+  updateScoreUI(scoreCell, explanationCell, key, score);
 
-    let score = toothRdes[key];
+  scoreCell.addEventListener("click", () => {
+    score = score === 6 ? 1 : score + 1;
+    patientData.rdes[tooth][key] = score;
 
     updateScoreUI(scoreCell, explanationCell, key, score);
-
-    scoreCell.addEventListener("click", () => {
-      score = score === 6 ? 1 : score + 1;
-      toothRdes[key] = score;
-
-      updateScoreUI(scoreCell, explanationCell, key, score);
-
-      localStorage.setItem("patientData", JSON.stringify(patientData));
-    });
+    localStorage.setItem("patientData", JSON.stringify(patientData));
   });
 });
 
@@ -221,17 +181,11 @@ function updateScoreUI(scoreCell, explanationCell, key, score) {
   explanationCell.textContent = RDES_EXPLANATION[key][score];
 }
 
-
-
 /* =========================
    NEXT → SUMMARY
 ========================= */
-const nextBtn = document.getElementById("nextBtn");
-
-if (nextBtn) {
-  nextBtn.addEventListener("click", () => {
-    patientData.rdesCompleted = true;  
-    localStorage.setItem("patientData", JSON.stringify(patientData));
-    window.location.href = "summary.html";
-  });
-}
+document.getElementById("nextBtn").addEventListener("click", () => {
+  patientData.rdesCompleted = true;
+  localStorage.setItem("patientData", JSON.stringify(patientData));
+  window.location.href = "summary.html";
+});
